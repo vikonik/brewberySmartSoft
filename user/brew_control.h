@@ -3,8 +3,10 @@
 #define BREW_CONTROL_H
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
-#define NULL 0
+
+//#define NULL 0
 
 /**
  * @brief Режимы работы пивоварни

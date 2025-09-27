@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\user;.\user\Display;.\user\DS18B20;.\user\Test;.\user\GUI;.\user\Button;.\user\Recept</IncludePath>
+              <IncludePath>.\user;.\user\Display;.\user\DS18B20;.\user\Test;.\user\GUI;.\user\Button;.\user\Recept;.\user\W25Q64</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -666,6 +666,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\GUI\menuClearing.h</FilePath>
             </File>
+            <File>
+              <FileName>menuManualControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\GUI\menuManualControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>menuManualControl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\GUI\menuManualControl.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -730,6 +740,33 @@
         </Group>
         <Group>
           <GroupName>W25Q64</GroupName>
+          <Files>
+            <File>
+              <FileName>w25qxx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\W25Q64\w25qxx.c</FilePath>
+            </File>
+            <File>
+              <FileName>w25qxx.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\W25Q64\w25qxx.h</FilePath>
+            </File>
+            <File>
+              <FileName>w25qxxConf.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\W25Q64\w25qxxConf.h</FilePath>
+            </File>
+            <File>
+              <FileName>w25qxx_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\W25Q64\w25qxx_spi.c</FilePath>
+            </File>
+            <File>
+              <FileName>w25qxx_spi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\W25Q64\w25qxx_spi.h</FilePath>
+            </File>
+          </Files>
         </Group>
         <Group>
           <GroupName>::Device</GroupName>

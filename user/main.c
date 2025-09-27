@@ -24,6 +24,9 @@
 
 extern void (*mainProcess)(void);
 
+//Надо менять назначение кнопок при настройке параметоров
+void (*buttonNavigationFunction)(void);
+void menuNavigationFunction(void);
 
 uint16_t allButtonsRAW = 0;
 
@@ -94,6 +97,7 @@ int main(void){
 
  // expressTest();
 	initMenuMainPage();
+	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
 while(1){
 	printMainPage(1,1);
 //	if(millis() - reinitButton > (1*30*1000)){
@@ -109,7 +113,9 @@ while(1){
 				beep(1);
 			}
 		}	
-		menuNavigation(allButtonsRAW & BUTTON_UP, allButtonsRAW & BUTTON_DN, allButtonsRAW & BUTTON_OK);
+		
+		buttonNavigationFunction();//Функции кнопок в соответствии с ситуйцией
+		//menuNavigation(allButtonsRAW & BUTTON_UP, allButtonsRAW & BUTTON_DN, allButtonsRAW & BUTTON_OK);
 //		
 //		if(millis() - readTemperatureTimer > 1000){
 //			readTemperatureTimer = millis();
@@ -125,8 +131,13 @@ while(1){
 /**/
 
 
+/*
+Функция кнопок - переключение мунктом меню
+*/
+void menuNavigationFunction(void){
+menuNavigation(allButtonsRAW & BUTTON_UP, allButtonsRAW & BUTTON_DN, allButtonsRAW & BUTTON_OK);
 
-
+}
 
 
  

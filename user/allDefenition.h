@@ -102,7 +102,13 @@ typedef struct xI2C 																//Структура софтварного 
 #define PIN_UART_TX   			PORT_Pin_3
 #define ONEWIRE_UART				MDR_UART1
 
-
+/***************** Flash **********************/
+#define SPI_FLASH						MDR_SSP1
+#define PORT_FLASH     			MDR_PORTC
+#define PIN_FLASH_MOSI			PORT_Pin_5
+#define PIN_FLASH_MISO			PORT_Pin_6
+#define PIN_FLASH_SCK				PORT_Pin_7
+#define PIN_FLASH_CS				PORT_Pin_8
 
 
 typedef enum{
