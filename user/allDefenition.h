@@ -126,6 +126,19 @@ typedef enum{
 }Connect_t;
 
 /**************************** Структура состояния устройства *****************************/
+typedef enum{
+	FERMENTATION,
+	FILNRATION
+}ManualControl_e;
+
+typedef struct{
+	float targetTemperature;//Целевая темпераатура
+	uint16_t targetTimer_h;//Таймер часы
+	uint8_t targetTimer_m;	//Таймер Минуты
+	uint8_t state;//вкл/откл
+}ManualControl_t;
+extern ManualControl_t manualControl[];
+
 typedef struct{
 	uint16_t woshingTime;//Оставшееся время мойки, ополаскивания. дезинфекции
 	uint8_t temperatureCurrent;

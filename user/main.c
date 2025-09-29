@@ -20,14 +20,29 @@
 #include "pid.h"
 #include "mainPage.h"
 #include "menu.h"
-
+#include "menuManualControl.h"
 
 extern void (*mainProcess)(void);
+
+ManualControl_t manualControl[2] = {
+    {
+        .targetTemperature = 15.0,
+        .targetTimer_h = 0,
+        .targetTimer_m = 10,
+        .state = 0
+    },
+    {
+        .targetTemperature = 25.0,
+        .targetTimer_h = 0,
+        .targetTimer_m = 0,
+        .state = 0
+    }
+};
 
 //Надо менять назначение кнопок при настройке параметоров
 void (*buttonNavigationFunction)(void);
 void menuNavigationFunction(void);
-
+void menuChangeDataFunction(void);
 uint16_t allButtonsRAW = 0;
 
 /********** Для кнопки *********/
@@ -139,7 +154,5 @@ menuNavigation(allButtonsRAW & BUTTON_UP, allButtonsRAW & BUTTON_DN, allButtonsR
 
 }
 
-
- 
 
 
