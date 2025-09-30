@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\user;.\user\Display;.\user\DS18B20;.\user\Test;.\user\GUI;.\user\Button;.\user\Recept;.\user\W25Q64</IncludePath>
+              <IncludePath>.\user;.\user\Display;.\user\DS18B20;.\user\Test;.\user\GUI;.\user\Button;.\user\Recept;.\user\W25Q64;.\user\BaseFunction</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -765,6 +765,51 @@
               <FileName>w25qxx_spi.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\user\W25Q64\w25qxx_spi.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>BaseFunction</GroupName>
+          <Files>
+            <File>
+              <FileName>fitration.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\BaseFunction\fitration.c</FilePath>
+            </File>
+            <File>
+              <FileName>filtration.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\BaseFunction\filtration.h</FilePath>
+            </File>
+            <File>
+              <FileName>fermentation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\BaseFunction\fermentation.c</FilePath>
+            </File>
+            <File>
+              <FileName>fermentation.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\BaseFunction\fermentation.h</FilePath>
+            </File>
+            <File>
+              <FileName>heating.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\BaseFunction\heating.c</FilePath>
+            </File>
+            <File>
+              <FileName>heating.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\BaseFunction\heating.h</FilePath>
+            </File>
+            <File>
+              <FileName>colling.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\BaseFunction\colling.c</FilePath>
+            </File>
+            <File>
+              <FileName>coling.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\BaseFunction\coling.h</FilePath>
             </File>
           </Files>
         </Group>
