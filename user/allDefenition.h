@@ -127,6 +127,8 @@ typedef enum{
 
 /**************************** Структура состояния устройства *****************************/
 typedef enum{
+	NAGREV,
+	COLD,
 	FERMENTATION,
 	FILNRATION
 }ManualControl_e;

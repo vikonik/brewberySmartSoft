@@ -24,7 +24,7 @@
 
 extern void (*mainProcess)(void);
 
-ManualControl_t manualControl[2] = {
+ManualControl_t manualControl[4] = {
     {
         .targetTemperature = 15.0,
         .targetTimer_h = 0,
@@ -33,6 +33,18 @@ ManualControl_t manualControl[2] = {
     },
     {
         .targetTemperature = 25.0,
+        .targetTimer_h = 0,
+        .targetTimer_m = 0,
+        .state = 0
+    },
+    {
+        .targetTemperature = 35.0,
+        .targetTimer_h = 0,
+        .targetTimer_m = 0,
+        .state = 0
+    },
+    {
+        .targetTemperature = 45.0,
         .targetTimer_h = 0,
         .targetTimer_m = 0,
         .state = 0
