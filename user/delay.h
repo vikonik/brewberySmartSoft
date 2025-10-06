@@ -5,6 +5,8 @@
 
 
 void delay_ms(uint32_t _tickDelay);
-    uint32_t getTick(void);
-    uint32_t millis(void);
+    uint64_t getTick(void);
+    uint64_t millis(void);
+		uint64_t getGlobalTime(void);
+		void setGlobalTime(uint64_t globalTime);
 #endif

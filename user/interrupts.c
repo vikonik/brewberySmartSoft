@@ -15,6 +15,7 @@
 
 extern uint32_t tickDelay ;
 extern uint64_t sysTickCount;//?????????? ?????????? ???????
+extern uint64_t sysTickGlobalTime;
 extern uint8_t buzerEn ;
 // Функция-заглушка для обработки необработанных прерываний (см. вектора прерываний)
 void Default_Handler(void) {
@@ -173,6 +174,7 @@ void TIMER1_IRQHandler(void) {
     if (TIMER_GetITStatus(MDR_TIMER1, TIMER_STATUS_CNT_ARR) != RESET) {
         // Код обработки прерывания Timer 1
 	sysTickCount++;
+	sysTickGlobalTime++;
 	if(tickDelay)
 		tickDelay--;
         // Очистка флага прерывания

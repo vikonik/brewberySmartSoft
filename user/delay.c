@@ -5,13 +5,13 @@
 
 uint32_t tickDelay = 0;
 uint64_t sysTickCount = 0;//Глобальная переменная времени
-
+uint64_t sysTickGlobalTime = 0;
 void delay_ms(uint32_t _tickDelay){
 	tickDelay = _tickDelay; //* 1000;
   while(tickDelay);
 }
 
-uint32_t getTick(void){
+uint64_t getTick(void){
 
 	return sysTickCount;
 }
@@ -19,7 +19,17 @@ uint32_t getTick(void){
 /*
 Аналог Ардуиновской функции
 */
-uint32_t millis(void){
+uint64_t millis(void){
 
 	return sysTickCount;
+}
+
+/**/
+uint64_t getGlobalTime(void){
+	return sysTickGlobalTime;
+}
+
+/**/
+void setGlobalTime(uint64_t globalTime){
+	sysTickGlobalTime = globalTime;
 }

@@ -676,6 +676,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\GUI\menuManualControl.h</FilePath>
             </File>
+            <File>
+              <FileName>menuSetting.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\GUI\menuSetting.c</FilePath>
+            </File>
+            <File>
+              <FileName>menuSetting.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\GUI\menuSetting.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

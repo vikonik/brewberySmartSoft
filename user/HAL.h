@@ -61,4 +61,5 @@ void printStartDelayLabel(uint64_t blincStateCnt);
 void processTemperatureControl(float targetTemp, uint32_t pumpOnTime, uint32_t pumpOffTime);
 void beep(uint8_t num);
 void displayPinTest(void);
+void printTempSensorError(void);
 #endif

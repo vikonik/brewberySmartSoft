@@ -15,7 +15,7 @@
 #define RELAY_PORT  MDR_PORTF
 #define MIXER     	PORT_Pin_5
 #define HEAT_1     	PORT_Pin_7
-#define HEAT_2     	PORT_Pin_8
+#define COOL_1     	PORT_Pin_8
 
 
 /************************ Дисплей ************************/
@@ -137,13 +137,19 @@ typedef struct{
 	float targetTemperature;//Целевая темпераатура
 	uint16_t targetTimer_h;//Таймер часы
 	uint8_t targetTimer_m;	//Таймер Минуты
+	uint8_t targetTimer_s;
 	uint8_t state;//вкл/откл
 }ManualControl_t;
 extern ManualControl_t manualControl[];
 
 typedef struct{
 	uint16_t woshingTime;//Оставшееся время мойки, ополаскивания. дезинфекции
-	uint8_t temperatureCurrent;
+	float temperatureCurrent;
+	ManualControl_t manualControlCurrentData;//Текущее состояние ручного управления, измеренная температура и оставшееся время
+  uint8_t flagRegimOn;
+	uint8_t pidEnable;
+	uint8_t btStatus;//Состояние BT вкл/откл
+	uint8_t wifiStatus;
 }DeviceStatus_t;
 extern DeviceStatus_t deviceStatus;
 #endif

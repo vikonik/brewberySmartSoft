@@ -16,6 +16,7 @@
 #include "ST7567_FB.h"
 #include "graph.h"
 #include "mainPage.h"
+#include "manifest.h"
 
 xI2C I2C_b;										// Структура софтварного I2C (нужен для опроса кнопок с микросхемы MPR121)
 bool MPR121initRresult = false;
@@ -43,6 +44,9 @@ void functionNull(void){}
 /**/
 void initDevice(void){
 	deviceStatus.temperatureCurrent = 25;
+	deviceStatus.manualControlCurrentData.targetTimer_h = 22;
+	deviceStatus.manualControlCurrentData.targetTimer_m = 15;
+	
 	
 	initCLK();
 	SystemCoreClockUpdate();
@@ -81,7 +85,7 @@ void initDevice(void){
 //	ST7567_FB_display();
 	printMainPage(1,1);
 	
-//	tempSensorInit();
+	tempSensorInit();
   
 	I2C_b = I2Csft_Settings();								//Заполнение структуры I2C данными
 	I2Csft_Init(&I2C_b);											//Инициализация портов ввода-вывода
@@ -223,7 +227,7 @@ void initBuzerTimer(void){
 void initRelay(void){
 	PORT_InitTypeDef PORT_InitStructure;
 	PORT_StructInit(&PORT_InitStructure);
-	PORT_InitStructure.PORT_Pin   = MIXER | HEAT_1 |HEAT_2;
+	PORT_InitStructure.PORT_Pin   = MIXER | HEAT_1 |COOL_1;
 	PORT_InitStructure.PORT_OE    = PORT_OE_OUT;
 	PORT_InitStructure.PORT_FUNC = PORT_FUNC_PORT;
 	PORT_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;
@@ -570,3 +574,13 @@ void displayPinTest(void){
 	}
 }
 
+
+/*
+Вывод сообщения об ошибке
+*/
+void printTempSensorError(void){
+	
+	ST7567_FB_cls();
+	ST7567_FB_printText(1, 1, (char*)tempSensorError, NORMAL);//	SWITCH
+	ST7567_FB_display();
+}

@@ -4,6 +4,7 @@
 #include "MDR32FxQI_ssp.h"              // Milandr::Drivers:SSP
 #include "MDR32FxQI_i2c.h"
 #include "MDR32FxQI_timer.h"            // Milandr::Drivers:TIMER
+#include "MDR32FxQI_uart.h"             // Milandr::Drivers:UART
 
 
 #include "HAL.h"
@@ -21,30 +22,33 @@
 #include "mainPage.h"
 #include "menu.h"
 #include "menuManualControl.h"
+#include "ds18b20.h"
+#include "tempSensor.h"
+#include "menuSetting.h"
 
 extern void (*mainProcess)(void);
 
 ManualControl_t manualControl[4] = {
     {
-        .targetTemperature = 15.0,
+        .targetTemperature = 0.0,
         .targetTimer_h = 0,
         .targetTimer_m = 10,
         .state = 0
     },
     {
-        .targetTemperature = 25.0,
+        .targetTemperature = 0.0,
         .targetTimer_h = 0,
         .targetTimer_m = 0,
         .state = 0
     },
     {
-        .targetTemperature = 35.0,
+        .targetTemperature = 0.0,
         .targetTimer_h = 0,
         .targetTimer_m = 0,
         .state = 0
     },
     {
-        .targetTemperature = 45.0,
+        .targetTemperature = 0.0,
         .targetTimer_h = 0,
         .targetTimer_m = 0,
         .state = 0
@@ -119,9 +123,12 @@ uint8_t stepUnLOC = 0;
 
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
-	pid_init(&pid, 2.0, 0.1, 0.5, 22.0) ;
+	pid_init(&pid, 2.0, 0.1, 0.5, 22.0);
 		initDevice();
-
+//while(1){
+//UART_SendData(MDR_UART1, 0x55);
+//	delay_ms(100);
+//}
  // expressTest();
 	initMenuMainPage();
 	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
@@ -141,17 +148,28 @@ while(1){
 			}
 		}	
 		
+		if(ds18b20.isSensorError){//Если датчик температуры не подключен
+			do{
+				printTempSensorError();
+				tempSensorInit();
+				}while(ds18b20.isSensorError);//Ждем пока подключат датчик
+				initMenuMainPage();//Перезапускаем меню
+		}
+		
 		buttonNavigationFunction();//Функции кнопок в соответствии с ситуйцией
 		//menuNavigation(allButtonsRAW & BUTTON_UP, allButtonsRAW & BUTTON_DN, allButtonsRAW & BUTTON_OK);
 //		
-//		if(millis() - readTemperatureTimer > 1000){
-//			readTemperatureTimer = millis();
-//			readTemperature();
-//			deviceStatus.temperatureCurrent = (uint8_t)ds18b20.temperature;
-//		}
+		if(millis() - readTemperatureTimer > 1000){
+			readTemperatureTimer = millis();
+			readTemperature();
+			deviceStatus.temperatureCurrent = ds18b20.temperature;
+		}
 
 	
 		mainProcess();//Указатель на текущий процесс
+		if(!!deviceStatus.pidEnable){
+			pid_relay_control(&pid);
+		}
 }
 }
 // 0x0800 0x0400 0x0200 0x0080 0x0040 0x0020
