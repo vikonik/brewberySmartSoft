@@ -17,7 +17,7 @@
 #include "graph.h"
 #include "mainPage.h"
 #include "manifest.h"
-
+#include "hc595.h"
 xI2C I2C_b;										// Структура софтварного I2C (нужен для опроса кнопок с микросхемы MPR121)
 bool MPR121initRresult = false;
 
@@ -84,6 +84,10 @@ void initDevice(void){
 //  ST7567_FB_drawBitmap(image_data_Lock,2,1, NORMAL);//image_data_temperatureControl
 //	ST7567_FB_display();
 	printMainPage(1,1);
+	
+	HC595_Init(1);
+//	uint8_t data = 0x55;
+//	HC595_SendByte(&data);
 	
 	tempSensorInit();
   

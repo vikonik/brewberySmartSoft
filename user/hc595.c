@@ -4,28 +4,29 @@
 #include "MDR32FxQI_rst_clk.h"          // Milandr::Drivers:RST_CLK
 
 #include "delay.h"
+uint8_t hc595NumOfReg = 1;
 /**/
 void hc595Init(void){
-    SSP_InitTypeDef sSSP;
-    PORT_InitTypeDef PORT_InitStructure;
-    
-    PORT_StructInit(&PORT_InitStructure);
-	PORT_InitStructure.PORT_Pin   = (PIN_HC595_CS);
-    PORT_InitStructure.PORT_OE    = PORT_OE_OUT;
-	PORT_InitStructure.PORT_FUNC = PORT_FUNC_PORT;
-	PORT_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;
-    PORT_InitStructure.PORT_SPEED = PORT_SPEED_FAST;
-    PORT_Init(PORT_HC595_CS, &PORT_InitStructure);
-	
+		SSP_InitTypeDef sSSP;
+		PORT_InitTypeDef PORT_InitStructure;
 
-    PORT_InitStructure.PORT_Pin   = (PIN_HC595_MOSI | PIN_HC595_CSK );
-    PORT_InitStructure.PORT_OE    = PORT_OE_OUT;
-    PORT_InitStructure.PORT_PULL_UP = 0;
-    PORT_InitStructure.PORT_PULL_DOWN = PORT_PULL_DOWN_ON;
-	PORT_InitStructure.PORT_FUNC = PORT_FUNC_ALTER;
-	PORT_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;
-    PORT_InitStructure.PORT_SPEED = PORT_SPEED_FAST;
-    PORT_Init(PORT_HC595_CS, &PORT_InitStructure);
+		PORT_StructInit(&PORT_InitStructure);
+		PORT_InitStructure.PORT_Pin   = (PIN_HC595_CS);
+		PORT_InitStructure.PORT_OE    = PORT_OE_OUT;
+		PORT_InitStructure.PORT_FUNC = PORT_FUNC_PORT;
+		PORT_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;
+		PORT_InitStructure.PORT_SPEED = PORT_SPEED_FAST;
+		PORT_Init(PORT_HC595_CS, &PORT_InitStructure);
+
+
+		PORT_InitStructure.PORT_Pin   = (PIN_HC595_MOSI | PIN_HC595_CSK );
+		PORT_InitStructure.PORT_OE    = PORT_OE_OUT;
+		PORT_InitStructure.PORT_PULL_UP = 0;
+		PORT_InitStructure.PORT_PULL_DOWN = PORT_PULL_DOWN_ON;
+		PORT_InitStructure.PORT_FUNC = PORT_FUNC_ALTER;
+		PORT_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;
+		PORT_InitStructure.PORT_SPEED = PORT_SPEED_FAST;
+		PORT_Init(PORT_HC595_CS, &PORT_InitStructure);
 
 	
 	/* Reset all SSP settings */
@@ -71,7 +72,8 @@ void  writnwReg(uint16_t v){
 }
 
 /**/
-void HC595_Init(void) {
+void HC595_Init(uint8_t numOfReg) {
+	
     PORT_InitTypeDef PORT_InitStructure;
 
     PORT_StructInit(&PORT_InitStructure);
@@ -95,18 +97,24 @@ void HC595_Init(void) {
     PORT_ResetBits(PORT_HC595_CS,PIN_HC595_MOSI);
     PORT_ResetBits(PORT_HC595_CS,PIN_HC595_CSK);
     PORT_ResetBits(PORT_HC595_CS,PIN_HC595_CS);
+		
+		hc595NumOfReg = numOfReg;
 }
 
-// Функция для отправки байта в HC595
-// Функция для отправки байта в HC595
-void HC595_SendByte(uint16_t data) {
+
+/*
+Аргументом передаем указатель на начало пересылаемых данных.
+Количество байт должно быть не меньше чем количество регистров hc595NumOfReg. 
+*/
+void HC595_SendByte(uint8_t *data) {
     // 1. Активировать Chip Select (CS) - установить в низкий уровень.
     PORT_ResetBits(PORT_HC595_CS, PIN_HC595_CS);
 
     // 2. Передать каждый бит данных последовательно.  Начиная с *старшего* бита (MSB).
+	for(uint8_t j = 0; j < hc595NumOfReg; j++){
     for (int i = 7; i >= 0; i--) {
         // Определить значение бита, который нужно передать.
-        if ((data >> i) & 0x01) {
+        if ((*data >> i) & 0x01) {
             PORT_SetBits(PORT_HC595_SPI, PIN_HC595_MOSI); // Установить MOSI High
         } else {
             PORT_ResetBits(PORT_HC595_SPI, PIN_HC595_MOSI); // Установить MOSI Low
@@ -118,10 +126,9 @@ void HC595_SendByte(uint16_t data) {
         for(volatile int i = 0; i < 10; i++); // Очень короткая задержка (настройте под вашу частоту)
         PORT_SetBits(PORT_HC595_SPI, PIN_HC595_CSK);    // SCK High
         for(volatile int i = 0; i < 10; i++); // Очень короткая задержка (настройте под вашу частоту)
-
-
     }
-
+		data++;
+	}
     // 3. Деактивировать Chip Select (CS) - установить в высокий уровень.
     PORT_SetBits(PORT_HC595_CS, PIN_HC595_CS);
 

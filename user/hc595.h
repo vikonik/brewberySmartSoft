@@ -8,8 +8,8 @@
     
 void hc595Init(void);
 void  writnwReg(uint16_t v);
-void HC595_Init(void);
-void HC595_SendByte(uint16_t data);
+void HC595_Init(uint8_t numOfReg);
+void HC595_SendByte(uint8_t *data);
 
 
 #endif
