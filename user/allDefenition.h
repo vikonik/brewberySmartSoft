@@ -154,6 +154,7 @@ typedef struct{
 	uint8_t wifiStatus;
 	uint8_t isMuted;//0-звук есть 1 - звука нет
 	Connect_t isConnected;//К чему подключено устройство
+	uint8_t isLocked;// 1-заблокировано
 }DeviceStatus_t;
 extern DeviceStatus_t deviceStatus;
 #endif

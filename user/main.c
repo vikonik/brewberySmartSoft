@@ -76,7 +76,7 @@ const unsigned long DEBOUNCE_DELAY = 50;     // защита от дребезг
 
 volatile uint16_t cnt = 0;
 /*********************/
- void initTestI2CPin(void);
+void initTestI2CPin(void);
 void initCLK(void);
 void initSPI(void);
 void initResetPin(void);
@@ -114,7 +114,8 @@ uint64_t readTemperatureTimer = 0;
 
 uint64_t reinitButton = 0;//Таймер переинициализации кнопок
 
-
+uint64_t timeButtonLock = 0;//Блокировка кнопок
+uint8_t triggerButtonLock = 0;
 uint64_t timeNow = 0;
 uint64_t timeButtonPres = 0;
 
@@ -135,7 +136,7 @@ int main(void){
 	initMenuMainPage();
 	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
 while(1){
-	printMainPage(1,deviceStatus.isConnected);
+	printMainPage(deviceStatus.isLocked,deviceStatus.isConnected);
 		// Обработка входящих JSON сообщений
 //	process_incoming_json(&uart_parser, &deviceStatus);
 	
@@ -153,6 +154,29 @@ while(1){
 					beep(1);
 			}
 		}	
+		
+		if(!!(allButtonsRAW & S1)){
+			if(millis() - timeButtonLock > 3000){
+				timeButtonLock = millis() ;
+				if(!triggerButtonLock){
+					triggerButtonLock = 1;
+				}
+				else{
+					triggerButtonLock = 0;
+					deviceStatus.isLocked ^= 1;
+					beep(1);
+					delay_ms(250);
+					beep(1);
+				}
+			}
+		}
+		
+		if(!!deviceStatus.isLocked){
+			delay_ms(1000);
+			continue;
+		}
+			
+		
 		checkSlider(&allButtonsRAW);
 		
 		if(ds18b20.isSensorError){//Если датчик температуры не подключен
