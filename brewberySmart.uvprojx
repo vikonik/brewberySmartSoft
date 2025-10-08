@@ -51,7 +51,7 @@
           <OutputName>HeatINtelekt</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
-          <CreateHexFile>0</CreateHexFile>
+          <CreateHexFile>1</CreateHexFile>
           <DebugInformation>1</DebugInformation>
           <BrowseInformation>1</BrowseInformation>
           <ListingPath>.\Listings\</ListingPath>
@@ -337,7 +337,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\user;.\user\Display;.\user\DS18B20;.\user\Test;.\user\GUI;.\user\Button;.\user\Recept;.\user\W25Q64;.\user\BaseFunction</IncludePath>
+              <IncludePath>.\user;.\user\Display;.\user\DS18B20;.\user\Test;.\user\GUI;.\user\Button;.\user\Recept;.\user\W25Q64;.\user\BaseFunction;.\user\JSON</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -368,7 +368,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>.\Objects\HeatINtelekt.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -711,6 +711,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\Button\button.h</FilePath>
             </File>
+            <File>
+              <FileName>slider.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\Button\slider.c</FilePath>
+            </File>
+            <File>
+              <FileName>slider.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\Button\slider.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -820,6 +830,21 @@
               <FileName>coling.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\user\BaseFunction\coling.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>JSON</GroupName>
+          <Files>
+            <File>
+              <FileName>json.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\JSON\json.c</FilePath>
+            </File>
+            <File>
+              <FileName>json.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\JSON\json.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -143,13 +143,17 @@ typedef struct{
 extern ManualControl_t manualControl[];
 
 typedef struct{
+	char id[39];													// ID устройства, "00000000-0000-0000-0000-000000000000" + символ конца строки
 	uint16_t woshingTime;//Оставшееся время мойки, ополаскивания. дезинфекции
 	float temperatureCurrent;
+	uint8_t temperatureTurget;
 	ManualControl_t manualControlCurrentData;//Текущее состояние ручного управления, измеренная температура и оставшееся время
   uint8_t flagRegimOn;
 	uint8_t pidEnable;
 	uint8_t btStatus;//Состояние BT вкл/откл
 	uint8_t wifiStatus;
+	uint8_t isMuted;//0-звук есть 1 - звука нет
+	Connect_t isConnected;//К чему подключено устройство
 }DeviceStatus_t;
 extern DeviceStatus_t deviceStatus;
 #endif

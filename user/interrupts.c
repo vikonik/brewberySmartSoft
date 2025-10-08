@@ -4,6 +4,7 @@
  *              ФАКТИЧЕСКИЕ имена из документации к вашему микроконтроллеру!
  */
 #include "MDR32FxQI_config.h"           // Milandr::Device:Startup
+#include "MDR32FxQI_uart.h"             // Milandr::Drivers:UART
 
 #include "interrupts.h"
 #include "MDR32FxQI_timer.h"            // Milandr::Drivers:TIMER
@@ -12,6 +13,7 @@
 #include "MDR32FxQI_rst_clk.h"          // Milandr::Drivers:RST_CLK
 
 #include "allDefenition.h" 
+#include "json.h" 
 
 extern uint32_t tickDelay ;
 extern uint64_t sysTickCount;//?????????? ?????????? ???????
@@ -122,14 +124,13 @@ void UART1_IRQHandler(void) {
 }
 
 void UART2_IRQHandler(void) {
-//    if (USART_GetITStatus(MDR_UART2, USART_IT_RXNE) != RESET) { // Прерывание по приему данных
-//        uint16_t data = USART_ReceiveData(MDR_UART2);  // Читаем данные
+    if (UART_GetITStatus(MDR_UART2, UART_IT_RX) != RESET) { // Прерывание по приему данных
+        uint16_t data = UART_ReceiveData(MDR_UART2);  // Читаем данные
 
-//        // Обработка полученных данных (пример)
-//        // ...
+				uart_receive_byte(&uart_parser, data);
 
-//        USART_ClearITPendingBit(MDR_UART2, USART_IT_RXNE); // Очищаем флаг прерывания
-//    }
+        UART_ClearITPendingBit(MDR_UART2, UART_IT_RX); // Очищаем флаг прерывания
+    }
     // Можно добавить обработку других типов прерываний UART (ошибка, передача завершена и т.д.)
 }
 

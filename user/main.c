@@ -25,6 +25,8 @@
 #include "ds18b20.h"
 #include "tempSensor.h"
 #include "menuSetting.h"
+#include "slider.h"
+#include "json.h"
 
 extern void (*mainProcess)(void);
 
@@ -133,7 +135,10 @@ int main(void){
 	initMenuMainPage();
 	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
 while(1){
-	printMainPage(1,1);
+	printMainPage(1,deviceStatus.isConnected);
+		// Обработка входящих JSON сообщений
+//	process_incoming_json(&uart_parser, &deviceStatus);
+	
 //	if(millis() - reinitButton > (1*30*1000)){
 //		reinitButton = millis();
 //		MPR121initRresult = mpr121_init(0x5A);
@@ -144,9 +149,11 @@ while(1){
 			allButtonsRAW = mpr121_get_touch(MPR121_ADDRESS_BUTTONS);		
 			
 			if(allButtonsRAW != 0){	
-				beep(1);
+				if((allButtonsRAW & S1)!= S1 && (allButtonsRAW & S2)!= S2 &&(allButtonsRAW & S3)!= S3 &&(allButtonsRAW & S4)!= S4 &&(allButtonsRAW & S5)!= S5 && (allButtonsRAW & S6)!= S6 )
+					beep(1);
 			}
 		}	
+		checkSlider(&allButtonsRAW);
 		
 		if(ds18b20.isSensorError){//Если датчик температуры не подключен
 			do{

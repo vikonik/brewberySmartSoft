@@ -18,6 +18,9 @@
 #include "mainPage.h"
 #include "manifest.h"
 #include "hc595.h"
+#include "json.h"
+
+
 xI2C I2C_b;										// Структура софтварного I2C (нужен для опроса кнопок с микросхемы MPR121)
 bool MPR121initRresult = false;
 
@@ -90,7 +93,9 @@ void initDevice(void){
 //	HC595_SendByte(&data);
 	
 	tempSensorInit();
-  
+ // uart_parser_init(&uart_parser);
+	
+	
 	I2C_b = I2Csft_Settings();								//Заполнение структуры I2C данными
 	I2Csft_Init(&I2C_b);											//Инициализация портов ввода-вывода
 	MPR121initRresult = mpr121_init(0x5A);
