@@ -62,4 +62,5 @@ void processTemperatureControl(float targetTemp, uint32_t pumpOnTime, uint32_t p
 void beep(uint8_t num);
 void displayPinTest(void);
 void printTempSensorError(void);
+void WiFi_uartInit(void);
 #endif

@@ -127,18 +127,20 @@ uint8_t stepUnLOC = 0;
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
 	pid_init(&pid, 2.0, 0.1, 0.5, 22.0);
-		initDevice();
+	initDevice();
 //while(1){
-//UART_SendData(MDR_UART1, 0x55);
+//UART_SendData(WiFI_UART, 0x55);
 //	delay_ms(100);
 //}
  // expressTest();
 	initMenuMainPage();
 	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
 while(1){
-	printMainPage(deviceStatus.isLocked,deviceStatus.isConnected);
+	printMainPage(&deviceStatus);
+	
+
 		// Обработка входящих JSON сообщений
-//	process_incoming_json(&uart_parser, &deviceStatus);
+	process_incoming_json(&uart_parser, &deviceStatus);
 	
 //	if(millis() - reinitButton > (1*30*1000)){
 //		reinitButton = millis();
@@ -150,8 +152,10 @@ while(1){
 			allButtonsRAW = mpr121_get_touch(MPR121_ADDRESS_BUTTONS);		
 			
 			if(allButtonsRAW != 0){	
-				if((allButtonsRAW & S1)!= S1 && (allButtonsRAW & S2)!= S2 &&(allButtonsRAW & S3)!= S3 &&(allButtonsRAW & S4)!= S4 &&(allButtonsRAW & S5)!= S5 && (allButtonsRAW & S6)!= S6 )
-					beep(1);
+				if((allButtonsRAW & S1)!= S1 && (allButtonsRAW & S2)!= S2 &&(allButtonsRAW & S3)!= S3 &&(allButtonsRAW & S4)!= S4 &&(allButtonsRAW & S5)!= S5 && (allButtonsRAW & S6)!= S6 ){
+					if(!deviceStatus.isMuted)
+						beep(1);
+				}
 			}
 		}	
 		
@@ -164,9 +168,9 @@ while(1){
 				else{
 					triggerButtonLock = 0;
 					deviceStatus.isLocked ^= 1;
-					beep(1);
-					delay_ms(250);
-					beep(1);
+					if(!deviceStatus.isMuted){
+						beep(2);
+					}
 				}
 			}
 		}

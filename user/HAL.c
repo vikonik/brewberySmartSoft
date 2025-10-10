@@ -86,15 +86,14 @@ void initDevice(void){
 	ST7567_FB_cls();
 //  ST7567_FB_drawBitmap(image_data_Lock,2,1, NORMAL);//image_data_temperatureControl
 //	ST7567_FB_display();
-	printMainPage(1,1);
+	printMainPage(&deviceStatus);
 	
 	HC595_Init(1);
-//	uint8_t data = 0x55;
-//	HC595_SendByte(&data);
 	
 	tempSensorInit();
- // uart_parser_init(&uart_parser);
-	
+  
+	WiFi_uartInit();//Настраиваем UART для WiFi
+	uart_parser_init(&uart_parser);
 	
 	I2C_b = I2Csft_Settings();								//Заполнение структуры I2C данными
 	I2Csft_Init(&I2C_b);											//Инициализация портов ввода-вывода
@@ -592,4 +591,59 @@ void printTempSensorError(void){
 	ST7567_FB_cls();
 	ST7567_FB_printText(1, 1, (char*)tempSensorError, NORMAL);//	SWITCH
 	ST7567_FB_display();
+}
+
+/*
+Настройка UART для WiFi
+*/
+void WiFi_uartInit(void){
+	
+	RST_CLK_PCLKcmd(RST_CLK_PCLK_UART2, ENABLE);
+	//настроить порты, UART_TXD1 - PC3, UART_RXD1 - PC4; UART_TXD2 - PD13, UART_RXD2 - PD14
+	RST_CLK_PCLKcmd(RST_CLK_PCLK_PORTC, ENABLE);
+	PORT_InitTypeDef PortInit;
+	
+	//RX
+	PortInit.PORT_OE = PORT_OE_IN;										//вход	
+	PortInit.PORT_Pin = PIN_WiFI_RX;									//номер пина
+	PortInit.PORT_PULL_UP = PORT_PULL_UP_ON;					//pull up резистор
+	PortInit.PORT_PULL_DOWN = PORT_PULL_DOWN_OFF;			//pull down резистор
+	PortInit.PORT_PD_SHM = PORT_PD_SHM_OFF;						//триггер Шмитта
+	PortInit.PORT_PD = PORT_PD_OPEN;									//вроде как "open drain" режим
+	PortInit.PORT_GFEN = PORT_GFEN_OFF;								//фильтр на короткие импульсы
+	PortInit.PORT_FUNC = PORT_FUNC_OVERRID;						//как переопределенная функция
+	PortInit.PORT_SPEED = PORT_SPEED_MAXFAST;					//максимальная скорость
+	PortInit.PORT_MODE = PORT_MODE_DIGITAL;						//цифровой
+	PORT_Init(PORT_WiFI, &PortInit);
+	
+	//TX
+	PortInit.PORT_OE = PORT_OE_OUT;										//выход	
+	PortInit.PORT_Pin = PIN_WiFI_TX;									//номер пина
+	PortInit.PORT_PULL_UP = PORT_PULL_UP_OFF;					//pull up резистор
+	PortInit.PORT_PULL_DOWN = PORT_PULL_DOWN_OFF;			//pull down резистор
+	PortInit.PORT_PD_SHM = PORT_PD_SHM_OFF;						//триггер Шмитта
+	PortInit.PORT_PD = PORT_PD_DRIVER;								//вроде как "push pull" режим
+	PortInit.PORT_GFEN = PORT_GFEN_OFF;								//фильтр на короткие импульсы
+	PortInit.PORT_FUNC = PORT_FUNC_OVERRID;							//как переопределенная функция
+	PortInit.PORT_SPEED = PORT_SPEED_MAXFAST;					//максимальная скорость
+	PortInit.PORT_MODE = PORT_MODE_DIGITAL;						//цифровой
+	PORT_Init(PORT_WiFI, &PortInit);
+	
+	UART_DeInit(WiFI_UART);
+  UART_BRGInit(WiFI_UART,UART_HCLKdiv1);
+	UART_InitTypeDef WiFi_uart;
+  WiFi_uart.UART_BaudRate = 115200;
+  WiFi_uart.UART_WordLength = UART_WordLength8b;
+  WiFi_uart.UART_StopBits = UART_StopBits1;
+  WiFi_uart.UART_Parity = UART_Parity_No;
+  WiFi_uart.UART_FIFOMode = UART_FIFO_OFF;
+	//WiFi_uart.UART_HardwareFlowControl = UART_HardwareFlowControl_None;
+  WiFi_uart.UART_HardwareFlowControl = UART_HardwareFlowControl_RXE|UART_HardwareFlowControl_TXE;
+
+  UART_Init(WiFI_UART, &WiFi_uart);
+  
+  UART_Cmd(WiFI_UART, ENABLE);
+	UART_ITConfig(MDR_UART2, UART_IT_RX, ENABLE);	
+	NVIC_EnableIRQ(UART2_IRQn);
+
 }

@@ -101,7 +101,12 @@ typedef struct xI2C 																//Структура софтварного 
 #define PIN_UART_RX   			PORT_Pin_4
 #define PIN_UART_TX   			PORT_Pin_3
 #define ONEWIRE_UART				MDR_UART1
-
+/***************** WiFi ***********************/
+//overaid
+#define PORT_WiFI     			MDR_PORTC
+#define PIN_WiFI_RX   			PORT_Pin_14
+#define PIN_WiFI_TX   			PORT_Pin_13
+#define WiFI_UART						MDR_UART2
 /***************** Flash **********************/
 #define SPI_FLASH						MDR_SSP1
 #define PORT_FLASH     			MDR_PORTC
@@ -145,6 +150,7 @@ extern ManualControl_t manualControl[];
 typedef struct{
 	char id[39];													// ID устройства, "00000000-0000-0000-0000-000000000000" + символ конца строки
 	uint16_t woshingTime;//Оставшееся время мойки, ополаскивания. дезинфекции
+	
 	float temperatureCurrent;
 	uint8_t temperatureTurget;
 	ManualControl_t manualControlCurrentData;//Текущее состояние ручного управления, измеренная температура и оставшееся время
