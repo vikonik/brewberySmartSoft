@@ -164,3 +164,12 @@ typedef struct{
 }DeviceStatus_t;
 extern DeviceStatus_t deviceStatus;
 #endif
+
+/*
+
+{"id":"12000000-0000-0000-0000-000000000000","washing_time":3600,"temperature_current":22.7,
+"heat_temperature":24,"flag_regim_on":1,"pid_enable":1,"bt_status":1,"wifi_status":1,"mute":0}
+*/
+
+
+
