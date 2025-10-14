@@ -511,6 +511,11 @@
               <FileType>5</FileType>
               <FilePath>.\user\tempSensor.h</FilePath>
             </File>
+            <File>
+              <FileName>ToDo List.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\ToDo List.txt</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -756,6 +761,11 @@
               <FileType>5</FileType>
               <FilePath>.\user\Recept\recipe_manager.h</FilePath>
             </File>
+            <File>
+              <FileName>Рецепты.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\Recept\Рецепты.txt</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -785,6 +795,16 @@
               <FileName>w25qxx_spi.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\user\W25Q64\w25qxx_spi.h</FilePath>
+            </File>
+            <File>
+              <FileName>flashController.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\W25Q64\flashController.c</FilePath>
+            </File>
+            <File>
+              <FileName>flashController.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\W25Q64\flashController.h</FilePath>
             </File>
           </Files>
         </Group>
