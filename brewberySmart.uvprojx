@@ -701,6 +701,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\GUI\menuReceptControl.h</FilePath>
             </File>
+            <File>
+              <FileName>menuReceptShablon.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\GUI\menuReceptShablon.c</FilePath>
+            </File>
+            <File>
+              <FileName>menuReceptShablon.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\GUI\menuReceptShablon.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
