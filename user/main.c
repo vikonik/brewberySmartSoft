@@ -29,6 +29,7 @@
 #include "json.h"
 #include "w25qxx.h"
 #include "recipe_manager.h"
+#include "state_machine.h"
 
 extern void (*mainProcess)(void);
 
@@ -187,6 +188,8 @@ while(1){
 		if(!!deviceStatus.pidEnable){
 			pid_relay_control(&pid);
 		}
+		
+		StateMachine_Process();
 }
 }
 // 0x0800 0x0400 0x0200 0x0080 0x0040 0x0020
