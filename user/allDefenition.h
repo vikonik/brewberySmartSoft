@@ -132,10 +132,11 @@ typedef enum{
 
 /**************************** Структура состояния устройства *****************************/
 typedef enum{
+	MESH,
+	FILTRATION,
 	NAGREV,
 	COLD,
-	FERMENTATION,
-	FILNRATION
+	FERMENTATION
 }ManualControl_e;
 
 typedef struct{
@@ -144,8 +145,8 @@ typedef struct{
 	uint8_t targetTimer_m;	//Таймер Минуты
 	uint8_t targetTimer_s;
 	uint8_t state;//вкл/откл
-}ManualControl_t;
-extern ManualControl_t manualControl[];
+}ShablonlControl_t;
+extern ShablonlControl_t manualControl[];
 
 typedef struct{
 	char id[39];													// ID устройства, "00000000-0000-0000-0000-000000000000" + символ конца строки
@@ -153,7 +154,7 @@ typedef struct{
 	
 	float temperatureCurrent;
 	uint8_t temperatureTurget;
-	ManualControl_t manualControlCurrentData;//Текущее состояние ручного управления, измеренная температура и оставшееся время
+	ShablonlControl_t manualControlCurrentData;//Текущее состояние ручного управления, измеренная температура и оставшееся время
   uint8_t flagRegimOn;
 	uint8_t pidEnable;
 	uint8_t btStatus;//Состояние BT вкл/откл

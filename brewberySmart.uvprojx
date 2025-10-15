@@ -691,6 +691,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\GUI\menuSetting.h</FilePath>
             </File>
+            <File>
+              <FileName>menuReceptControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\GUI\menuReceptControl.c</FilePath>
+            </File>
+            <File>
+              <FileName>menuReceptControl.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\GUI\menuReceptControl.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -765,6 +775,11 @@
               <FileName>Рецепты.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\user\Recept\Рецепты.txt</FilePath>
+            </File>
+            <File>
+              <FileName>Рецепт_1.txt</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\Recept\Рецепт_1.txt</FilePath>
             </File>
           </Files>
         </Group>

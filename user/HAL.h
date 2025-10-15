@@ -52,6 +52,13 @@ void initDevice(void);
 
 void expressTest(void);
 void buttonInit(void);
+
+void heatOn(void);
+void heatOff(void);
+void nasosOn(void);
+void nasosOff(void);
+void collOn(void);
+void collOff(void);
 void fermentationFunction(void);
 void filtrationFunction(void);
 void allFunctionStop(void);

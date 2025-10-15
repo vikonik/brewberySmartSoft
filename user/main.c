@@ -27,35 +27,12 @@
 #include "menuSetting.h"
 #include "slider.h"
 #include "json.h"
+#include "w25qxx.h"
+#include "recipe_manager.h"
 
 extern void (*mainProcess)(void);
 
-ManualControl_t manualControl[4] = {
-    {
-        .targetTemperature = 0.0,
-        .targetTimer_h = 0,
-        .targetTimer_m = 10,
-        .state = 0
-    },
-    {
-        .targetTemperature = 0.0,
-        .targetTimer_h = 0,
-        .targetTimer_m = 0,
-        .state = 0
-    },
-    {
-        .targetTemperature = 0.0,
-        .targetTimer_h = 0,
-        .targetTimer_m = 0,
-        .state = 0
-    },
-    {
-        .targetTemperature = 0.0,
-        .targetTimer_h = 0,
-        .targetTimer_m = 0,
-        .state = 0
-    }
-};
+
 
 //Надо менять назначение кнопок при настройке параметоров
 void (*buttonNavigationFunction)(void);
@@ -121,15 +98,20 @@ uint64_t timeButtonPres = 0;
 
 uint8_t stepUnLOC = 0;
 
+/******************************************/
 
-/***********************************/
-
+/****************************************/
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
 	pid_init(&pid, 2.0, 0.1, 0.5, 22.0);
 	initDevice();
-//while(1){
-//UART_SendData(WiFI_UART, 0x55);
+	
+	/****************************/
+//preSetRecepteToFlash();
+	
+	/****************************/
+//while(1){}
+//	UART_SendData(WiFI_UART, 0x55);
 //	delay_ms(100);
 //}
  // expressTest();
@@ -140,7 +122,7 @@ while(1){
 	
 
 		// Обработка входящих JSON сообщений
-	process_incoming_json(&uart_parser, &deviceStatus);
+	//process_incoming_json(&uart_parser, &deviceStatus);
 	
 //	if(millis() - reinitButton > (1*30*1000)){
 //		reinitButton = millis();

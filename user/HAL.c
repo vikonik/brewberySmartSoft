@@ -94,7 +94,7 @@ void initDevice(void){
   
 	WiFi_uartInit();//Настраиваем UART для WiFi
 	uart_parser_init(&uart_parser);
-	
+//	
 	flashInit();
 	
 	I2C_b = I2Csft_Settings();								//Заполнение структуры I2C данными
@@ -351,7 +351,14 @@ void nasosOn(void){
 void nasosOff(void){
 	PORT_ResetBits(RELAY_PORT, MIXER);
 }
-
+/**/
+void collOn(void){
+	PORT_SetBits(RELAY_PORT, COOL_1);
+}
+/**/
+void collOff(void){
+	PORT_ResetBits(RELAY_PORT, COOL_1);
+}
 /*
 Функция ферментации
 греем одну минуту, потом пауза 2
