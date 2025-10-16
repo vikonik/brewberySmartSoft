@@ -188,6 +188,11 @@ while(1){
 		if(!!deviceStatus.pidEnable){
 			pid_relay_control(&pid);
 		}
+		else{
+			heatOff();
+			nasosOff();
+			collOff();
+		}
 		
 		StateMachine_Process();
 }
