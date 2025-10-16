@@ -148,7 +148,56 @@
           <Name>-UAny -O206 -S0 -C0 -P00 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8007 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO7 -FD20100000 -FC4000 -FN1 -FF0K1986VE1xI.FLM -FS00 -FL020000 -FP0($$Device:K1986VE1xI$FLM\K1986VE1xI\K1986VE1xI.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint/>
+      <Breakpoint>
+        <Bp>
+          <Number>0</Number>
+          <Type>0</Type>
+          <LineNumber>503</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>30070</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\Project\1_brewery\РРЅС‚РµР»РµРєС‚СѓР°Р»СЊРЅР°СЏ\2_Soft\user\GUI\menuReceptShablon.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\HeatINtelekt\user/GUI/menuReceptShablon.c\503</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>370</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>29234</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\Project\1_brewery\РРЅС‚РµР»РµРєС‚СѓР°Р»СЊРЅР°СЏ\2_Soft\user\GUI\menuReceptShablon.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\HeatINtelekt\user/GUI/menuReceptShablon.c\370</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>23</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>16204</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\Project\1_brewery\РРЅС‚РµР»РµРєС‚СѓР°Р»СЊРЅР°СЏ\2_Soft\user\Recept\state_machine.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\HeatINtelekt\user/Recept/state_machine.c\23</Expression>
+        </Bp>
+      </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -217,6 +266,16 @@
         </Ww>
         <Ww>
           <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>current_state</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>mainProcess</ItemText>
+        </Ww>
+        <Ww>
+          <count>15</count>
           <WinNumber>1</WinNumber>
           <ItemText>current_state</ItemText>
         </Ww>

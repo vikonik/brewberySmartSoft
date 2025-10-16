@@ -23,6 +23,7 @@ typedef struct {
 extern PIDController_t pid;
 
 // Прототипы функций
+void pid_Off(void);
 void pid_init(PIDController_t* pid, float Kp, float Ki, float Kd, float setpoint);
 float pid_compute(PIDController_t* pid, float input, uint32_t current_time);
 void pid_relay_control(PIDController_t* pid);
