@@ -118,7 +118,8 @@ int main(void){
  // expressTest();
 	initMenuMainPage();
 	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
-while(1){
+
+	while(1){
 	printMainPage(&deviceStatus);
 	
 
@@ -158,13 +159,13 @@ while(1){
 			}
 		}
 		
-		if(!!deviceStatus.isLocked){
-			delay_ms(1000);
-			continue;
-		}
+//		if(!!deviceStatus.isLocked){
+//			delay_ms(1000);
+//			continue;
+//		}
 			
 		
-		checkSlider(&allButtonsRAW);
+		
 		
 		if(ds18b20.isSensorError){//Если датчик температуры не подключен
 			do{
@@ -174,7 +175,11 @@ while(1){
 				initMenuMainPage();//Перезапускаем меню
 		}
 		
-		buttonNavigationFunction();//Функции кнопок в соответствии с ситуйцией
+		//Если нет блокировки, то разрешаем работу кнопок
+		if(!deviceStatus.isLocked){
+			buttonNavigationFunction();//Функции кнопок в соответствии с ситуйцией
+			checkSlider(&allButtonsRAW);
+		}
 		//menuNavigation(allButtonsRAW & BUTTON_UP, allButtonsRAW & BUTTON_DN, allButtonsRAW & BUTTON_OK);
 //		
 		if(millis() - readTemperatureTimer > 1000){
@@ -185,14 +190,15 @@ while(1){
 
 	
 		mainProcess();//Указатель на текущий процесс
-		if(!!deviceStatus.pidEnable){
-			pid_relay_control(&pid);
-		}
-		else{
-			heatOff();
-			nasosOff();
-			collOff();
-		}
+		if(!deviceStatus.isWoshing)//Если не моем пивоварню
+			if(!!deviceStatus.pidEnable){
+				pid_relay_control(&pid);
+			}
+			else{
+				heatOff();
+				nasosOff();
+				collOff();
+			}
 		
 		StateMachine_Process();
 }

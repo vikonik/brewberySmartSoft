@@ -6,10 +6,13 @@
 #include "allDefenition.h"
 #include "delay.h"
 
+#define PUMP_WORK_DELAY	5
+#define PUMP_PORK_PERIOD	PUMP_WORK_DELAY + 120
+#define PUMP_STOP_PERIOD	60
 PIDController_t pid;
-const uint16_t pumpWorkDelay = 5;//Задержка на включение
-const uint16_t pumpWorkPeriod = pumpWorkDelay + 120; //Время работы помпы
-const uint16_t pumpStopPeriod = 60;//Время простоя помпы
+ uint16_t pumpWorkDelay = PUMP_WORK_DELAY;//Задержка на включение
+ uint16_t pumpWorkPeriod = PUMP_PORK_PERIOD; //Время работы помпы
+ uint16_t pumpStopPeriod = PUMP_STOP_PERIOD;//Время простоя помпы
 uint64_t pidTimeoutCnt = 0;
 uint64_t pumpTimeoutCnt = 0;
 uint8_t relay_state = 0;
@@ -77,9 +80,17 @@ void pid_init(PIDController_t* pid, float Kp, float Ki, float Kd, float setpoint
 
 }
 
+/**/
+float myFabs(float data){
+	if(data < 0)
+		data *= -1;
+
+	return data;
+}
+
 // Установка мертвой зоны (гистерезиса)
 void pid_set_deadband(PIDController_t* pid, float deadband) {
-    pid->deadband = fabsf(deadband);
+    pid->deadband = myFabs(deadband);
 }
 
 // Установка новой уставки
@@ -100,7 +111,7 @@ float pid_compute(PIDController_t* pid, float input, uint32_t current_time) {
     float error = pid->setpoint - input;
     
     // Применяем мертвую зону к ошибке
-    if(fabsf(error) <= pid->deadband) {
+    if(myFabs(error) <= pid->deadband) {
         error = 0.0f;
     }
     
@@ -136,6 +147,9 @@ float pid_compute(PIDController_t* pid, float input, uint32_t current_time) {
 /*
 Функция для работы ПИД регулятора с реле
 */
+/*
+Функция для работы ПИД регулятора с реле
+*/
 void pid_relay_control(PIDController_t* pid) {
     if(millis() - pidTimeoutCnt > 1000) {
         pidTimeoutCnt = millis();
@@ -145,9 +159,6 @@ void pid_relay_control(PIDController_t* pid) {
         
         // Статические переменные для ШИМ-счетчиков
         static uint32_t pwm_counter = 0;
-        static uint8_t last_heat_state = 0;
-        static uint8_t last_cool_state = 0;
-        
         pwm_counter++;
         if(pwm_counter >= 10) pwm_counter = 0;  // 10-секундный ШИМ цикл
         
@@ -169,8 +180,8 @@ void pid_relay_control(PIDController_t* pid) {
             cool_power = 0.0f;
         }
         
-        // Управление нагревателем с ШИМ
-        if(heat_power > (pwm_counter * 10)) {
+        // Управление нагревателем с ШИМ (ИСПРАВЛЕННАЯ логика)
+        if(pwm_counter < (heat_power / 10.0f)) {
             set_heater(1);
             pid->heating_active = 1;
         } else {
@@ -178,8 +189,8 @@ void pid_relay_control(PIDController_t* pid) {
             pid->heating_active = 0;
         }
         
-        // Управление охладителем с ШИМ
-        if(cool_power > (pwm_counter * 10)) {
+        // Управление охладителем с ШИМ (ИСПРАВЛЕННАЯ логика)
+        if(pwm_counter < (cool_power / 10.0f)) {
             set_cooler(1);
             pid->cooling_active = 1;
         } else {
@@ -195,30 +206,25 @@ void pid_relay_control(PIDController_t* pid) {
             pid->heating_active = 0;
             pid->cooling_active = 0;
         }
-        
-        // Логирование (можно убрать в релизе)
-        /*
-        printf("Temp: %.1f°C, Set: %.1f°C, PID: %.1f%%, Heat: %d%%, Cool: %d%%\n", 
-               temperature, pid->setpoint, pid_output, 
-               (int)heat_power, (int)cool_power);
-        */
     }
-		
-		if(millis() - pumpTimeoutCnt > 1000){
-			pumpTimeoutCnt = millis();
-			pumpCnt++;
-			
-			if(pumpCnt < pumpWorkDelay){//Задержка на включение
-				set_pump(0);
-			}
-			else if(pumpCnt <= pumpWorkPeriod){
-				set_pump(1);
-			}
-			else if(pumpCnt >= pumpStopPeriod){
-				set_pump(0);
-				pumpCnt = 0;
-			}
-			
-			
-		}
+    
+    // Управление помпой остается без изменений
+    if(millis() - pumpTimeoutCnt > 1000){
+        pumpTimeoutCnt = millis();
+        pumpCnt++;
+        
+        if(pumpCnt < pumpWorkDelay){
+            set_pump(0);
+        }
+        else if(pumpCnt < pumpWorkPeriod){
+            set_pump(1);
+        }
+        else if(pumpCnt < (pumpWorkPeriod + pumpStopPeriod)){
+            set_pump(0);
+        }
+        else {
+            set_pump(0);
+            pumpCnt = 0;
+        }
+    }
 }

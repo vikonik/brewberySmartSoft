@@ -1,3 +1,4 @@
 Добавить пиктограмму для обозначения каждого из режимов ручного управления
 
 shablonSetFunction
+shablonSetFunctionAuto
