@@ -30,7 +30,8 @@
 #include "w25qxx.h"
 #include "recipe_manager.h"
 #include "state_machine.h"
-
+#include "menuReceptLoaded.h"
+#include "state_machineLoaded.h"
 extern void (*mainProcess)(void);
 
 
@@ -104,6 +105,7 @@ uint8_t stepUnLOC = 0;
 /****************************************/
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
+	deviceStatus.isMuted = 1;
 	pid_init(&pid, 2.0, 0.1, 0.5, 22.0);
 	initDevice();
 	
@@ -168,10 +170,25 @@ int main(void){
 		
 		
 		if(ds18b20.isSensorError){//Если датчик температуры не подключен
+				heatOff();
+				nasosOff();
+				collOff();
+				StateMachine_Process_Stop();
+				StateMachine_Process_Stop_Loaded();			
+				buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
+				mainProcess = functionNull;
 			do{
 				printTempSensorError();
 				tempSensorInit();
+				deviceStatus.flagRegimOn = 0;
+				deviceStatus.pidEnable = 0;
+
+				
+				
+				
 				}while(ds18b20.isSensorError);//Ждем пока подключат датчик
+			
+				initDevice();
 				initMenuMainPage();//Перезапускаем меню
 		}
 		
@@ -190,7 +207,7 @@ int main(void){
 
 	
 		mainProcess();//Указатель на текущий процесс
-		if(!deviceStatus.isWoshing)//Если не моем пивоварню
+		if(!deviceStatus.isWoshing){//Если не моем пивоварню
 			if(!!deviceStatus.pidEnable){
 				pid_relay_control(&pid);
 			}
@@ -200,7 +217,9 @@ int main(void){
 				collOff();
 			}
 		
-		StateMachine_Process();
+//		StateMachine_Process();
+//		StateMachine_Process_Loaded();
+		}
 }
 }
 // 0x0800 0x0400 0x0200 0x0080 0x0040 0x0020

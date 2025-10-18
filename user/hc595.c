@@ -21,7 +21,7 @@ void hc595Init(void){
 
 		PORT_InitStructure.PORT_Pin   = (PIN_HC595_MOSI | PIN_HC595_CSK );
 		PORT_InitStructure.PORT_OE    = PORT_OE_OUT;
-		PORT_InitStructure.PORT_PULL_UP = 0;
+		PORT_InitStructure.PORT_PULL_UP = PORT_PULL_UP_OFF;
 		PORT_InitStructure.PORT_PULL_DOWN = PORT_PULL_DOWN_ON;
 		PORT_InitStructure.PORT_FUNC = PORT_FUNC_ALTER;
 		PORT_InitStructure.PORT_MODE  = PORT_MODE_DIGITAL;

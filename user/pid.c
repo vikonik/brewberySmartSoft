@@ -160,7 +160,7 @@ void pid_relay_control(PIDController_t* pid) {
         // Статические переменные для ШИМ-счетчиков
         static uint32_t pwm_counter = 0;
         pwm_counter++;
-        if(pwm_counter >= 10) pwm_counter = 0;  // 10-секундный ШИМ цикл
+        if(pwm_counter >= 100) pwm_counter = 0;  // 10-секундный ШИМ цикл
         
         // Определяем текущую мощность в процентах
         float heat_power = 0.0f;
@@ -181,7 +181,7 @@ void pid_relay_control(PIDController_t* pid) {
         }
         
         // Управление нагревателем с ШИМ (ИСПРАВЛЕННАЯ логика)
-        if(pwm_counter < (heat_power / 10.0f)) {
+        if(pwm_counter < (heat_power / 1/*10.0f*/)) {
             set_heater(1);
             pid->heating_active = 1;
         } else {
@@ -190,7 +190,7 @@ void pid_relay_control(PIDController_t* pid) {
         }
         
         // Управление охладителем с ШИМ (ИСПРАВЛЕННАЯ логика)
-        if(pwm_counter < (cool_power / 10.0f)) {
+        if(pwm_counter < (cool_power / 1 /*10.0f*/)) {
             set_cooler(1);
             pid->cooling_active = 1;
         } else {

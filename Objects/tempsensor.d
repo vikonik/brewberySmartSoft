@@ -1,0 +1,16 @@
+.\objects\tempsensor.o: user\tempSensor.c
+.\objects\tempsensor.o: user\tempSensor.h
+.\objects\tempsensor.o: .\user\DS18B20\ds18b20.h
+.\objects\tempsensor.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\tempsensor.o: .\user\DS18B20\onewire.h
+.\objects\tempsensor.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_uart.h
+.\objects\tempsensor.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
+.\objects\tempsensor.o: .\RTE\_Target_1\RTE_Components.h
+.\objects\tempsensor.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
+.\objects\tempsensor.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
+.\objects\tempsensor.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
+.\objects\tempsensor.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
+.\objects\tempsensor.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
+.\objects\tempsensor.o: .\RTE\Device\K1986VE1xI\system_K1986VE1xI.h
+.\objects\tempsensor.o: .\user\MDR32_uart.h
+.\objects\tempsensor.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h

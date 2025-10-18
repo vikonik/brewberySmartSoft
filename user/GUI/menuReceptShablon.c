@@ -26,8 +26,6 @@ extern void (*mainProcess)(void);
 void menuChangeDataFunctionTemp(void);
 void menuChangeDataFunctionTimer(void);
 void menuNavigationFunction(void);	
-void setButtonNavigationToChangeValueTemp(void);
-void setButtonNavigationToChangeValueTimer(void);
 void setMenuNavigationToChangeValue(void);
 void shablonSetFunction(void);
 void shablonExecute(void);
@@ -35,6 +33,8 @@ void shablonExecute(void);
 void (*shablonExecuteSetFunction)(void);
 static const uint8_t firstStringH = 15;
 
+
+char *currentProcessBuf;//[16];//Назваие текущего процесса атоматического нецепта
 ShablonlControl_t receptControl[5];
 //Текст таблицы
 MenuText_t label_Temperature = {stringTemperature, 1, firstStringH + charHeight8pt * 1};
@@ -52,37 +52,42 @@ MenuText_t label_ShablonSkip = {stringSkip, 40, firstStringH + charHeight8pt * 3
 ManualControl_e shablonTemperatureData;
 ManualControl_e shablonTimeData;
 
+uint8_t menu_ShablonState_data = 0;
 MENU_ADD(menu_ShablonTempersture,		menu_ShablonTime,  	m_null,             			m_null,  setButtonNavigationToChangeValueTemp, 	&shablonTemperatureData, 	&label_ShablonTemperature);
 MENU_ADD(menu_ShablonTime,					menu_ShablonNazad,  menu_ShablonTempersture,  m_null,  setButtonNavigationToChangeValueTimer, &shablonTimeData, 				&label_ShablonTimer);
 MENU_ADD(menu_ShablonNazad,					menu_ShablonState,  menu_ShablonTime,         m_null,  NULL/*printMenuManualControl*/,   			NULL, 										&label_ShablonNazad);
-MENU_ADD(menu_ShablonState,					m_null,  						menu_ShablonNazad,        m_null,  shablonSetFunction,   									NULL, 										&label_ShablonState);
+MENU_ADD(menu_ShablonState,					m_null,  						menu_ShablonNazad,        m_null,  shablonSetFunction,   									&menu_ShablonState_data, 										&label_ShablonState);
 
-MENU_ADD(menu_ShablonSkip,					m_null,  						m_null,        						m_null,  switchStadge,   																NULL, 										&label_ShablonSkip);
+MENU_ADD(menu_ShablonSkip,					m_null,  						m_null,        						m_null,  switchStadge,   												NULL, 										&label_ShablonSkip);
 
-//Позиуии для вывода температуры и времени
+//Позиции для вывода температуры и времени
 MenuText_t label_ShablonCurentTemperature = {NULL, 100, firstStringH + charHeight8pt * 1};
 MenuText_t label_ShablonCurrentTime = {NULL, 79, firstStringH + charHeight8pt * 2};
 /*
 menu - menu_ShablonTempersture
 */
-char* getTemperatureStr(ShablonlControl_t* control, menu_t *menu ) {
+char* getTemperatureStr(ShablonlControl_t* control, uint8_t addr ) {
     static char buf[8];
-    sprintf(buf, "%02.1f", control[*menu->data].targetTemperature);
+    sprintf(buf, "%02.1f", control[addr].targetTemperature);
     return buf;
 }
 
 /*
 menu - menu_ShablonTime
 */
-char* getTimerStr(ShablonlControl_t* control, menu_t *menu) {
+char* getTimerStr(ShablonlControl_t* control, uint8_t addr) {
     static char buf[8];
-    sprintf(buf,"%03d:%02d",control[*menu->data].targetTimer_h, control[*menu->data].targetTimer_m);
+    sprintf(buf,"%03d:%02d",control[addr].targetTimer_h, control[addr].targetTimer_m);
     return buf;
 }
 /*
-
+control - 
+menuTemperature
+menuTime
+labelTime
 */
-void printShablon(ShablonlControl_t* control, menu_t *menuTemperature,  menu_t *menuTime, MenuText_t* labelTemperatire, MenuText_t* labelTime){
+
+void printShablon(ShablonlControl_t* control, menu_t *menuTemperature,  menu_t *menuTime)/*, MenuText_t* labelTemperatire, MenuText_t* labelTime)*/{
 //	char buf[8];
 //	const uint8_t temperaturePosX = 60;
 //	const uint8_t temperaturePosY = label_Temperature.posY;	
@@ -117,16 +122,17 @@ void printShablon(ShablonlControl_t* control, menu_t *menuTemperature,  menu_t *
 			break;
 	}
 		
-
-	labelTemperatire->text = getTemperatureStr(control, menuTemperature);
-	labelTime->text = getTimerStr(control, menuTime);
+menuTemperature->text->text = getTemperatureStr(control, *menuTemperature->data);
+menuTime->text->text = getTimerStr(control, *menuTime->data);
+	//labelTemperatire->text = getTemperatureStr(control, menuTemperature);
+	//labelTime->text = getTimerStr(control, menuTime);
 	
 	MENU_Init(menuTemperature);
 	
 }
 
 /**/
-void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_t *menu){
+void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *control, uint8_t data){
 	static uint64_t blincTimer = 0;
 	static uint64_t valueTimer = 0;	
 //	static char _buf[8];
@@ -140,7 +146,7 @@ void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_t *m
 		blincTimer = millis();
 	//	sprintf(buf, "%02.1f", manualControl.targetTemperature);
 	//	sprintf(_buf, "OK");
-		label_ShablonTemperature.text = getTemperatureStr(control,menu);
+		label_ShablonTemperature.text = getTemperatureStr(control,data);
 		ST7567_FB_fillRect(label_ShablonTemperature.posX, label_ShablonTemperature.posY, 32, 13, 0);
 		if(!!flagChange)
 			ST7567_FB_printText(label_ShablonTemperature.posX, label_ShablonTemperature.posY, (char*)label_ShablonTemperature.text, INVERSE);
@@ -165,13 +171,13 @@ void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_t *m
 			valueTimer = millis();
 			if(*_allButtonsRAW & BUTTON_UP){
 				flagChange = 1;
-				control[*menu->data].targetTemperature += 1;
+				control[data].targetTemperature += 1;
 				if(buttonPressCounter < 6)
 								buttonPressCounter++;
 			}
 			else if(*_allButtonsRAW & BUTTON_DN){
 				flagChange = 1;
-				control[*menu->data].targetTemperature -= 1;
+				control[data].targetTemperature -= 1;
 				if(buttonPressCounter < 6)
 								buttonPressCounter++;
 			}
@@ -191,7 +197,7 @@ void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_t *m
 
 
 /**/
-void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_t *menu){
+void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, uint8_t data){
 	static uint64_t blincTimer = 0;
 	static uint64_t valueTimer = 0;	
 //	static char _buf[8];
@@ -201,10 +207,10 @@ void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_
 	static uint8_t buttonPressCounter = 0;
 	static uint8_t flagChange = 0;
 	static uint64_t _time = 0;
-	_time = control[*menu->data].targetTimer_h*60 + control[*menu->data].targetTimer_m;
+	_time = control[data].targetTimer_h*60 + control[data].targetTimer_m;
 	if(millis() - blincTimer > 100){
 		blincTimer = millis();
-		label_ShablonTimer.text = getTimerStr(control,menu);
+		label_ShablonTimer.text = getTimerStr(control,data);
 		ST7567_FB_fillRect(label_ShablonTimer.posX, label_ShablonTimer.posY, 32, 13, 0);
 		if(!!flagChange)
 			ST7567_FB_printText(label_ShablonTimer.posX, label_ShablonTimer.posY, (char*)label_ShablonTimer.text, INVERSE);
@@ -220,14 +226,14 @@ void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_
 	
 	if(buttonPressCounter == 1)
 		buttonDelay = 500;
-	else if(buttonPressCounter >= 48)
+	else if(buttonPressCounter >= 90)
 		buttonDelay = 252;	
-	else if(buttonPressCounter >= 24)
+	else if(buttonPressCounter >= 46)
 		buttonDelay = 251;
 	else if(buttonPressCounter >= 6)
 		buttonDelay = 250;
 	else
-		buttonDelay = 100;
+		buttonDelay = 1000;
 	
 		if(millis() - valueTimer > buttonDelay){
 			valueTimer = millis();
@@ -246,12 +252,19 @@ void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_
 					else 
 						_time += 1;
 			  
-				if(buttonPressCounter < 48)
+				if(buttonPressCounter < 90)
 								buttonPressCounter++;
 			}
 			else if(*_allButtonsRAW & BUTTON_DN){
 				flagChange = 1;
 
+				//При подходе к 0 сбавляем скорость
+				if(_time < 10){
+					buttonDelay = 1;
+					buttonPressCounter = 0;
+				}
+					
+				
 					if(buttonDelay == 250)
 						_time -= 10;
 					if(buttonDelay == 251)
@@ -263,15 +276,15 @@ void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_
 			  
 				if(_time > 59940)
 					_time = 59940;
-				if(buttonPressCounter < 48)
+				if(buttonPressCounter < 90)
 								buttonPressCounter++;
 			}
 			else if(*_allButtonsRAW & BUTTON_OK){
 				//Сохраняем данные в рабочую структуру
-				control[*menu->data].targetTimer_h = _time / 60; 
-				control[*menu->data].targetTimer_m = _time % 60; 
-				deviceStatus.manualControlCurrentData.targetTimer_h =  control[*menu->data].targetTimer_h;//Дублируем пересчет
-				deviceStatus.manualControlCurrentData.targetTimer_m =  control[*menu->data].targetTimer_m; 
+				control[data].targetTimer_h = _time / 60; 
+				control[data].targetTimer_m = _time % 60; 
+				deviceStatus.manualControlCurrentData.targetTimer_h =  control[data].targetTimer_h;//Дублируем пересчет
+				deviceStatus.manualControlCurrentData.targetTimer_m =  control[data].targetTimer_m; 
 				deviceStatus.manualControlCurrentData.targetTimer_s = 0;
 				setMenuNavigationToChangeValue();
 				MENU_Init(&menu_ShablonTime);
@@ -282,8 +295,8 @@ void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, menu_
 				flagChange = 0;
 			} 
 		}
-		control[*menu->data].targetTimer_h = _time / 60; 
-		control[*menu->data].targetTimer_m = _time % 60; 
+		control[data].targetTimer_h = _time / 60; 
+		control[data].targetTimer_m = _time % 60; 
 }
 /**/
 void setButtonNavigationToChangeValueTemp(void){
@@ -299,12 +312,12 @@ void setButtonNavigationToChangeValueTimer(void){
 
 /**/
 void menuChangeDataFunctionTemp(void){
-	changeValue(&allButtonsRAW, receptControl, m_curr);
+	changeValue(&allButtonsRAW, receptControl,*m_curr->data);
 }
  
 /**/
 void menuChangeDataFunctionTimer(void){
-	changeValueTime(&allButtonsRAW, receptControl, m_curr);
+	changeValueTime(&allButtonsRAW, receptControl, *m_curr->data);
 }
 
 /**/
@@ -448,176 +461,3 @@ void distanceSetTimer(uint16_t newTimer, void(*func)(void)){
 }
  
 /*************************************************************/
-/*
-Выводим на экран таблицу для отображеия хода автоматического процесса
-*/
-void printShablonAuto(Recipe_t *recept, SystemState_t* processState){
-	allMenuTextClear();
-//	ST7567_FB_setFont(&microsoftSansSerif_8ptFontInfo);
-	ST7567_FB_printText(label_Ustavka.posX, label_Ustavka.posY, (char*)label_Ustavka.text, NORMAL);
-	ST7567_FB_printText(label_Sostoianie.posX, label_Sostoianie.posY, (char*)label_Sostoianie.text, NORMAL);	
-	ST7567_FB_printText(label_Temperature.posX, label_Temperature.posY, (char*)label_Temperature.text, NORMAL);		
-	ST7567_FB_printText(label_Time.posX, label_Time.posY, (char*)label_Time.text, NORMAL);
-	
-		receptControl[0].targetTimer_h = recept->mash_stages[current_mash_stage].time / 60;
-		receptControl[0].targetTimer_m = recept->mash_stages[current_mash_stage].time % 60;
-		receptControl[0].targetTemperature = recept->mash_stages[current_mash_stage].temperature/10;
-	label_ShablonTemperature.text = getTemperatureStr(receptControl,m_curr);
-	label_ShablonTimer.text =  getTimerStr(receptControl,m_curr);
-	MENU_Init(&menu_ShablonTempersture);//Инициализация
-}
-
-
-/*
-Запускаем автоматический процесс
-*/
-void shablonSetFunctionAuto(void){
-
-	if(!deviceStatus.flagRegimOn){
-		deviceStatus.flagRegimOn = 1;
-		mainProcess = StateMachine_Process;
-		StateMachine_Process_Start();//Запустили процесс
-	//	mainProcess = shablonExecute;//Процесс который будет запускаться в основном цикле
-		label_ShablonState.text = stringStop;//Меняем надпись
-		//Блокируем функции Назад и пропустить
-		menu_ShablonTime.next = &menu_ShablonState;				
-		menu_ShablonState.previous = &menu_ShablonTime;
-		
-		
-		//Сотрем надпись Дальше и Назад
-		ST7567_FB_fillRect(label_ShablonNazad.posX, label_ShablonNazad.posY, 90, 13, 0);	
-		
-		//Устанавливаем настройки температуры и времени для текущего цикла
-		receptControl[0].targetTimer_h = current_recipe.mash_stages[current_mash_stage].time / 60;
-		receptControl[0].targetTimer_m = current_recipe.mash_stages[current_mash_stage].time % 60;
-		receptControl[0].targetTemperature = current_recipe.mash_stages[current_mash_stage].temperature/10;
-		deviceStatus.manualControlCurrentData.targetTemperature = receptControl[0].targetTemperature;
-		
-		//Копируем установки таймера в рабочую структуру
-		deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[0].targetTimer_h;//Дублируем пересчет
-		deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[0].targetTimer_m; 
-		deviceStatus.manualControlCurrentData.targetTimer_s = 0;
-		pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
-		deviceStatus.pidEnable = 1;
-	}
-	else{
-		StateMachine_Process_Stop();
-		deviceStatus.flagRegimOn = 0;
-		ST7567_FB_fillRect(	label_ShablonState.posX, label_ShablonState.posY, 
-											128-label_ShablonCurentTemperature.posX, 13, 0);
-		label_ShablonState.text = stringPusk;//Меняем надпись
-		//Возвращаем функцию Назад
-		menu_ShablonTime.next = &menu_ShablonNazad;				
-		menu_ShablonState.previous = &menu_ShablonSkip;
-		mainProcess = functionNull;//Отключаем функцию
-		deviceStatus.pidEnable = 0;
-		pid_Off();
-	}
-
-	MENU_Init(&menu_ShablonState);
-}
-
-/**/
-void shablonSetFunctionAutoResnart(void){
-//Устанавливаем настройки температуры и времени для текущего цикла
-		receptControl[0].targetTimer_h = current_recipe.mash_stages[current_mash_stage].time / 60;
-		receptControl[0].targetTimer_m = current_recipe.mash_stages[current_mash_stage].time % 60;
-		receptControl[0].targetTemperature = current_recipe.mash_stages[current_mash_stage].temperature/10;
-		deviceStatus.manualControlCurrentData.targetTemperature = receptControl[0].targetTemperature;
-		
-		//Копируем установки таймера в рабочую структуру
-		deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[0].targetTimer_h;//Дублируем пересчет
-		deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[0].targetTimer_m; 
-		deviceStatus.manualControlCurrentData.targetTimer_s = 0;
-		label_ShablonTemperature.text = getTemperatureStr(receptControl,m_curr);
-	label_ShablonTimer.text =  getTimerStr(receptControl,m_curr);
-		pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
-	MENU_Init(&menu_ShablonState);
-}
-/**/
-void shablonSetFunctionFilnrationAutoResnart(void){
-//Устанавливаем настройки температуры и времени для текущего цикла
-		receptControl[0].targetTimer_h = 0;//Жестко 30 минут
-		receptControl[0].targetTimer_m = 30;
-		receptControl[0].targetTemperature = 77;//Всегда одна
-		deviceStatus.manualControlCurrentData.targetTemperature = receptControl[0].targetTemperature;
-		
-		//Копируем установки таймера в рабочую структуру
-		deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[0].targetTimer_h;//Дублируем пересчет
-		deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[0].targetTimer_m; 
-		deviceStatus.manualControlCurrentData.targetTimer_s = 0;
-		label_ShablonTemperature.text = getTemperatureStr(receptControl,m_curr);
-	label_ShablonTimer.text =  getTimerStr(receptControl,m_curr);
-		pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
-	MENU_Init(&menu_ShablonState);
-}
-
-/**/
-void shablonSetFunctionBoilingAutoResnart(void){
-//Устанавливаем настройки температуры и времени для текущего цикла
-		receptControl[0].targetTimer_h = current_recipe.boil_time / 60;
-		receptControl[0].targetTimer_m = current_recipe.boil_time % 60;
-		receptControl[0].targetTemperature = 98;
-		deviceStatus.manualControlCurrentData.targetTemperature = receptControl[0].targetTemperature;
-		
-		//Копируем установки таймера в рабочую структуру
-		deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[0].targetTimer_h;//Дублируем пересчет
-		deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[0].targetTimer_m; 
-		deviceStatus.manualControlCurrentData.targetTimer_s = 0;
-		label_ShablonTemperature.text = getTemperatureStr(receptControl,m_curr);
-	label_ShablonTimer.text =  getTimerStr(receptControl,m_curr);
-		pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
-	MENU_Init(&menu_ShablonState);
-}
-
-
-/**/
-void shablonSetFunctionCoolingAutoResnart(void){
-//Устанавливаем настройки температуры и времени для текущего цикла
-		receptControl[0].targetTimer_h = 20;
-		receptControl[0].targetTimer_m = 0;
-		receptControl[0].targetTemperature = current_recipe.fermentation_temp/10;
-		deviceStatus.manualControlCurrentData.targetTemperature = receptControl[0].targetTemperature;
-		
-		//Копируем установки таймера в рабочую структуру
-		deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[0].targetTimer_h;//Дублируем пересчет
-		deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[0].targetTimer_m; 
-		deviceStatus.manualControlCurrentData.targetTimer_s = 0;
-		label_ShablonTemperature.text = getTemperatureStr(receptControl,m_curr);
-		label_ShablonTimer.text =  getTimerStr(receptControl,m_curr);
-		pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
-	MENU_Init(&menu_ShablonState);
-}
-
-/**/
-void shablonSetFunctionFermentingAutoResnart(void){
-//Устанавливаем настройки температуры и времени для текущего цикла
-		receptControl[0].targetTimer_h = current_recipe.fermentation_days * 24;
-		receptControl[0].targetTimer_m = 0;
-		receptControl[0].targetTemperature = current_recipe.fermentation_temp/10;
-		deviceStatus.manualControlCurrentData.targetTemperature = receptControl[0].targetTemperature;
-		
-		//Копируем установки таймера в рабочую структуру
-		deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[0].targetTimer_h;//Дублируем пересчет
-		deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[0].targetTimer_m; 
-		deviceStatus.manualControlCurrentData.targetTimer_s = 0;
-		label_ShablonTemperature.text = getTemperatureStr(receptControl,m_curr);
-		label_ShablonTimer.text =  getTimerStr(receptControl,m_curr);
-		pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
-	MENU_Init(&menu_ShablonState);
-}
-
-/**/
-void stopProcess(void){
-							deviceStatus.flagRegimOn = 0;
-							ST7567_FB_fillRect(	label_ShablonState.posX, label_ShablonState.posY, 
-																128-label_ShablonCurentTemperature.posX, 13, 0);
-							label_ShablonState.text = stringPusk;//Меняем надпись
-							//Возвращаем функцию Назад
-							menu_ShablonTime.next = &menu_ShablonNazad;				
-							menu_ShablonState.previous = &menu_ShablonSkip;
-							mainProcess = functionNull;//Отключаем функцию
-							deviceStatus.pidEnable = 0;
-							pid_Off();
-	MENU_Init(&menu_ShablonState);
-}

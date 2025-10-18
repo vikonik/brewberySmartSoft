@@ -13,6 +13,7 @@
 #include "recipe_manager.h"
 #include "menuReceptShablon.h"
 #include "menuReceptControl.h"
+#include "menuReceptLoaded.h"
 
 void printMenuReceptInt(void);
 void printMenuReceptLoaded(void);
@@ -34,18 +35,19 @@ MenuText_t label_Temnoe = {stringTemnoe, 1, firstStringH + charHeight8pt};
 MenuText_t label_Svetloe = {stringSvetloe, 1, firstStringH + charHeight8pt*2};
 
 char insBeerNumber[3] = {0,1,2};
-MENU_ADD(menu_Psenichnoe,	menu_Temnoe,  	m_null,             m_null,             startRecepteProcess,   &insBeerNumber[0],      &label_Psenichnoe);
-MENU_ADD(menu_Temnoe ,   	menu_Svetloe,   menu_Psenichnoe,    m_null,             startRecepteProcess,   &insBeerNumber[1],      &label_Temnoe);
-MENU_ADD(menu_Svetloe,   	menu_Nazad,     menu_Temnoe,      	m_null,             startRecepteProcess,   &insBeerNumber[2],      &label_Svetloe);
+MENU_ADD(menu_Psenichnoe,	menu_Temnoe,  	m_null,             m_null,     startRecepteProcess,   			&insBeerNumber[0],      &label_Psenichnoe);
+MENU_ADD(menu_Temnoe ,   	menu_Svetloe,   menu_Psenichnoe,    m_null,     startRecepteProcess,   			&insBeerNumber[1],      &label_Temnoe);
+MENU_ADD(menu_Svetloe,   	menu_Nazad,     menu_Temnoe,      	m_null,     startRecepteProcess,   			&insBeerNumber[2],      &label_Svetloe);
 
 /****************** Меню для загруженных рецептов *****************/
 MenuText_t label_Recept_s_Loaded[3];
 MenuText_t label_ReseptDell = {stringReseptDell, 64, firstStringH + charHeight8pt*3};
 uint8_t menu_ReceptLoaded_Data[3];//Здесь храним индекс рецепта для удаления
-MENU_ADD(menu_ReceptLoaded_1,	m_null,  	m_null,             m_null,             printReseptProces,   &menu_ReceptLoaded_Data[0],      &label_Recept_s_Loaded[0]);
-MENU_ADD(menu_ReceptLoaded_2,	m_null,  	m_null,             m_null,             printReseptProces,   &menu_ReceptLoaded_Data[1],      &label_Recept_s_Loaded[1]);
-MENU_ADD(menu_ReceptLoaded_3,	m_null,  	m_null,             m_null,             printReseptProces,   &menu_ReceptLoaded_Data[2],      &label_Recept_s_Loaded[2]);
-MENU_ADD(menu_ReceptDelet,		m_null,  	menu_Nazad,         m_null,             NULL,   NULL,      &label_ReseptDell);
+MENU_ADD(menu_ReceptLoaded_1,	m_null,  	m_null,             m_null,       startRecepteProcessLoaded,  &menu_ReceptLoaded_Data[0],      &label_Recept_s_Loaded[0]);
+MENU_ADD(menu_ReceptLoaded_2,	m_null,  	m_null,             m_null,       startRecepteProcessLoaded,  &menu_ReceptLoaded_Data[1],      &label_Recept_s_Loaded[1]);
+MENU_ADD(menu_ReceptLoaded_3,	m_null,  	m_null,             m_null,       startRecepteProcessLoaded,  &menu_ReceptLoaded_Data[2],      &label_Recept_s_Loaded[2]);
+
+//MENU_ADD(menu_ReceptDelet,		m_null,  	menu_Nazad,         m_null,             NULL,   NULL,      &label_ReseptDell);
 
 menu_t *menu_ReceptLoaded_arr[3] = {
 	&menu_ReceptLoaded_1,
@@ -57,8 +59,9 @@ menu_t *menu_ReceptLoaded_arr[3] = {
 /******************* Шаблон для отображеиня хода приготовления *************/
 ShablonlControl_t shablonlControl;
 void printReseptProces(void){
-	
-	printShablon(&shablonlControl, &menu_ShablonTempersture, &menu_ShablonTime, &label_ShablonTemperature, &label_ShablonTimer);
+		//printShablon(&shablonlControl, &menu_ShablonTempersture, &menu_ShablonTime, &label_ShablonTemperature, &label_ShablonTimer);
+		//printShablon(&shablonlControl, &menu_ShablonTempersture, &menu_ShablonTime);
+
 }
 
 /******************* Управление рецептом ***************************/
@@ -140,7 +143,7 @@ void printMenuReceptLoaded(void){
 			menu_ReceptLoaded_arr[menuCnt]->next = &menu_Nazad;
 		
 		menu_ReceptLoaded_arr[menuCnt]->select = &m_null;
-		menu_ReceptLoaded_arr[menuCnt]->func = NULL;	
+	//	menu_ReceptLoaded_arr[menuCnt]->func = NULL;	
 		menu_ReceptLoaded_arr[menuCnt]->text->text = recipe_names[menuCnt];
 		menu_ReceptLoaded_arr[menuCnt]->text->posX = 1;
 		menu_ReceptLoaded_arr[menuCnt]->text->posY = firstStringH + charHeight8pt*menuCnt;

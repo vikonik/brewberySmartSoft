@@ -711,6 +711,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\GUI\menuReceptShablon.h</FilePath>
             </File>
+            <File>
+              <FileName>menuReceptLoaded.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\GUI\menuReceptLoaded.c</FilePath>
+            </File>
+            <File>
+              <FileName>menuReceptLoaded.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\GUI\menuReceptLoaded.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -790,6 +800,16 @@
               <FileName>Рецепт_1.txt</FileName>
               <FileType>5</FileType>
               <FilePath>.\user\Recept\Рецепт_1.txt</FilePath>
+            </File>
+            <File>
+              <FileName>state_machineLoaded.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\Recept\state_machineLoaded.c</FilePath>
+            </File>
+            <File>
+              <FileName>state_machineLoaded.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\Recept\state_machineLoaded.h</FilePath>
             </File>
           </Files>
         </Group>

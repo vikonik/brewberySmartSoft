@@ -2,3 +2,10 @@
 
 shablonSetFunction
 shablonSetFunctionAuto
+
+.\Objects\HeatINtelekt.axf: Error: L6200E: Symbol shablonSetFunctionAutoResnart multiply defined (by menureceptloaded.o and menureceptcontrol.o).
+.\Objects\HeatINtelekt.axf: Error: L6200E: Symbol shablonSetFunctionBoilingAutoResnart multiply defined (by menureceptloaded.o and menureceptcontrol.o).
+.\Objects\HeatINtelekt.axf: Error: L6200E: Symbol shablonSetFunctionCoolingAutoResnart multiply defined (by menureceptloaded.o and menureceptcontrol.o).
+.\Objects\HeatINtelekt.axf: Error: L6200E: Symbol shablonSetFunctionFermentingAutoResnart multiply defined (by menureceptloaded.o and menureceptcontrol.o).
+.\Objects\HeatINtelekt.axf: Error: L6200E: Symbol shablonSetFunctionFilnrationAutoResnart multiply defined (by menureceptloaded.o and menureceptcontrol.o).
+.\Objects\HeatINtelekt.axf: Error: L6200E: Symbol stopProcess multiply defined (by menureceptloaded.o and menureceptcontrol.o).

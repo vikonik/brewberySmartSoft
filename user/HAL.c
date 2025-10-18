@@ -521,7 +521,8 @@ void beep(uint8_t num){
 	for(uint8_t i = 0; i < num; i++){
 		buzerEn = 1;
 		delay_ms(200);
-		buzerEn = 0;	
+		buzerEn = 0;
+		delay_ms(200);
 	}
 }
 

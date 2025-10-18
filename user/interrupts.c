@@ -198,7 +198,7 @@ void TIMER2_IRQHandler(void) {
         beep = 0;
     
     }
-	PORT_WriteBit(PORT_BUZZER, PIN_BUZZER,beep);
+	PORT_WriteBit(PORT_BUZZER, PIN_BUZZER, (BitStatus)beep);
     }
 }
 

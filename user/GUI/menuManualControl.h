@@ -5,10 +5,10 @@
 
 void printTable(void);
 void printMenuManualControl(void);
-char* getTemperatureStr(void);
-char* getTimerStr(void);
-void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *manualControl);
-void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *manualControl);
+//char* getTemperatureStr(void);
+//char* getTimerStr(void);
+//void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *control, uint8_t data);
+//void changeValueTime(uint16_t* _allButtonsRAW, ShablonlControl_t *control, uint8_t data);
 void setButtonNavigationToChangeValueTemp(void);
 void setButtonNavigationToChangeValueTimer(void);
 void setMenuNavigationToChangeValue(void);

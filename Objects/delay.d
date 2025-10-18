@@ -1,0 +1,11 @@
+.\objects\delay.o: user\delay.c
+.\objects\delay.o: user\delay.h
+.\objects\delay.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
+.\objects\delay.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\delay.o: .\RTE\_Target_1\RTE_Components.h
+.\objects\delay.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
+.\objects\delay.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
+.\objects\delay.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
+.\objects\delay.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
+.\objects\delay.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
+.\objects\delay.o: .\RTE\Device\K1986VE1xI\system_K1986VE1xI.h
