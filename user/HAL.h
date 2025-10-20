@@ -70,4 +70,6 @@ void beep(uint8_t num);
 void displayPinTest(void);
 void printTempSensorError(void);
 void WiFi_uartInit(void);
+void UART_TxBuffer_Init(void);
+void sendStatus(void);
 #endif

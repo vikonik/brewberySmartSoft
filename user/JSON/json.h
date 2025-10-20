@@ -19,6 +19,8 @@ typedef struct {
 } UART_JSON_Parser;
 extern UART_JSON_Parser uart_parser;
 
+uint16_t convertToJSON(DeviceStatus_t * model, char * data_out);
+	
 // Инициализация парсера
 void uart_parser_init(UART_JSON_Parser *parser);
 

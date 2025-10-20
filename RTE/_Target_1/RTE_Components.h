@@ -1,6 +1,6 @@
 
 /*
- * Auto generated Run-Time-Environment Configuration File
+ * Auto generated Run-Time-Environment Component Configuration File
  *      *** Do not modify ! ***
  *
  * Project: 'brewberySmart' 
@@ -16,9 +16,7 @@
  */
 #define CMSIS_device_header "K1986VE1xI.h"
 
-/*  Milandr::Device:Startup:2.2.0i */
 /* Target microcontroller definition */
 #define USE_K1986VE1xI
-
 
 #endif /* RTE_COMPONENTS_H */

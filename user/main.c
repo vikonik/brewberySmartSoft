@@ -105,7 +105,7 @@ uint8_t stepUnLOC = 0;
 /****************************************/
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
-	deviceStatus.isMuted = 1;
+	deviceStatus.isMuted = 0;
 	pid_init(&pid, 2.0, 0.1, 0.5, 22.0);
 	initDevice();
 	
@@ -177,15 +177,11 @@ int main(void){
 				StateMachine_Process_Stop_Loaded();			
 				buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
 				mainProcess = functionNull;
-			do{
-				printTempSensorError();
-				tempSensorInit();
-				deviceStatus.flagRegimOn = 0;
-				deviceStatus.pidEnable = 0;
-
-				
-				
-				
+				do{
+					printTempSensorError();
+					tempSensorInit();
+					deviceStatus.flagRegimOn = 0;
+					deviceStatus.pidEnable = 0;
 				}while(ds18b20.isSensorError);//Ждем пока подключат датчик
 			
 				initDevice();
@@ -220,6 +216,10 @@ int main(void){
 //		StateMachine_Process();
 //		StateMachine_Process_Loaded();
 		}
+		
+		//Отправляем состояние устройства
+sendStatus();
+		
 }
 }
 // 0x0800 0x0400 0x0200 0x0080 0x0040 0x0020

@@ -65,8 +65,8 @@ const char stringBtOn[] = "BT Вкл.";
 const char stringBtOff[] = "BT Откл.";
 const char stringWiFiOn[] =  "WiFi Вкл.";
 const char stringWiFiOff[] = "WiFi Откл.";
-
-
+const char stringMuteOn[] = "Звук Вкл.";
+const char stringMuteOff[] = "Звук Откл.";
 
 
 

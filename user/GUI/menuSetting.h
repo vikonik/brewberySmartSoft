@@ -7,5 +7,5 @@ void printMenuSetting(void);
 void printChangeTime(void);
 void cahageWiFiState(void);
 void changeBtState(void);
-
+void changeMuteState(void);
 #endif

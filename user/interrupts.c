@@ -14,10 +14,10 @@
 
 #include "allDefenition.h" 
 #include "json.h" 
-
+#include "delay.h" 
 extern uint32_t tickDelay ;
-extern uint64_t sysTickCount;//?????????? ?????????? ???????
-extern uint64_t sysTickGlobalTime;
+extern uint32_t sysTickCount;//?????????? ?????????? ???????
+extern uint32_t sysTickGlobalTime;
 extern uint8_t buzerEn ;
 // Функция-заглушка для обработки необработанных прерываний (см. вектора прерываний)
 void Default_Handler(void) {
@@ -131,7 +131,26 @@ void UART2_IRQHandler(void) {
 
         UART_ClearITPendingBit(MDR_UART2, UART_IT_RX); // Очищаем флаг прерывания
     }
-    // Можно добавить обработку других типов прерываний UART (ошибка, передача завершена и т.д.)
+
+		    // Обработка прерывания передачи (готов к передаче)
+    if(UART_GetITStatus(MDR_UART2, UART_IT_TX) != RESET) {
+			static uint16_t txIndex = 1;//1-Потому что 0-й байт отправляется при запуске процксса
+        
+        // Передаем следующий байт
+        if(!!uartTxBuffer.size--) {
+            UART_SendData(MDR_UART2, uartTxBuffer.buffer[txIndex++]);
+        } else {
+            // Вся передача завершена
+            UART_ITConfig(MDR_UART2, UART_IT_TX, DISABLE);
+            uartTxBuffer.lastTxTime = millis();
+            uartTxBuffer.transmissionComplete = 1;
+            txIndex = 1;
+        }
+        
+        UART_ClearITPendingBit(MDR_UART2, UART_IT_TX);
+    }
+    
+
 }
 
 void SSP1_IRQHandler(void) {

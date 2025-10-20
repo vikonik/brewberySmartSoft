@@ -22,12 +22,15 @@ static const uint8_t firstStringH = 15;
 MenuText_t label_SetTime = {stringTime, 1, firstStringH+ charHeight8pt * 0};
 MenuText_t label_WiFi = {stringWiFiOff, 1, firstStringH+ charHeight8pt * 1};
 MenuText_t label_BT = {stringBtOn, 1, firstStringH+ charHeight8pt * 2};
-MenuText_t label_SettingNazad = {stringNazad, 1, firstStringH+ charHeight8pt * 3};
+MenuText_t label_Mute = {stringMuteOff, 1, firstStringH+ charHeight8pt * 3};
+MenuText_t label_SettingNazad = {stringNazad, 80, firstStringH+ charHeight8pt * 3};
+
 
 MENU_ADD(menu_SetTime,			menu_WiFi,  				m_null,    			m_null,      printChangeTime, NULL,  		&label_SetTime);
 MENU_ADD(menu_WiFi,					menu_BT,  					menu_SetTime,   m_null,      cahageWiFiState, NULL,    	&label_WiFi);
-MENU_ADD(menu_BT,						menu_SettingNazad,  menu_WiFi,    	m_null,      changeBtState,   NULL,    	&label_BT);
-MENU_ADD(menu_SettingNazad, m_null,  						menu_BT,  			menu_Recept, allMenuTextClear,   					NULL,    	&label_SettingNazad);
+MENU_ADD(menu_BT,						menu_Mute,  				menu_WiFi,    	m_null,      changeBtState,   NULL,    	&label_BT);
+MENU_ADD(menu_Mute,					menu_SettingNazad, 	menu_BT,    		m_null,      changeMuteState,   NULL,    	&label_Mute);
+MENU_ADD(menu_SettingNazad, m_null,  						menu_Mute,  		menu_Recept, allMenuTextClear,NULL,    	&label_SettingNazad);
 
 
 /**/
@@ -85,7 +88,19 @@ allMenuTextClear();
 		MENU_Init(&menu_BT);
 }
 
-
+/**/
+void changeMuteState(void){
+allMenuTextClear();
+	if(!!deviceStatus.isMuted){//Выключаем BT
+			menu_Mute.text->text = stringMuteOff;//Устанавливаем новую надпись
+			deviceStatus.isMuted = 0;//Меняем состояние
+		}
+		else{
+			menu_Mute.text->text = stringMuteOn;//Устанавливаем новую надпись
+			deviceStatus.isMuted = 1;//Меняем состояние
+		}
+		MENU_Init(&menu_Mute);
+}
 
 /********************** Установка времени **************************/
 static MenuText_t label_timeH = 		{NULL, 49, firstStringH + charHeight8pt * 1};

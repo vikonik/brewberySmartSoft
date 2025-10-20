@@ -21,6 +21,9 @@
 #include "json.h"
 #include "flashController.h"
 
+UartTxBuffer_t uartTxBuffer;//Буфер для передачи по UART
+
+
 xI2C I2C_b;										// Структура софтварного I2C (нужен для опроса кнопок с микросхемы MPR121)
 bool MPR121initRresult = false;
 
@@ -93,6 +96,7 @@ void initDevice(void){
 	tempSensorInit();
   
 	WiFi_uartInit();//Настраиваем UART для WiFi
+	UART_TxBuffer_Init();
 	uart_parser_init(&uart_parser);
 //	
 	flashInit();
@@ -603,6 +607,7 @@ void printTempSensorError(void){
 	ST7567_FB_display();
 }
 
+/*******************************************************************************************/
 /*
 Настройка UART для WiFi
 */
@@ -657,3 +662,35 @@ void WiFi_uartInit(void){
 	NVIC_EnableIRQ(UART2_IRQn);
 
 }
+
+/**/
+// Инициализация буфера передачи
+void UART_TxBuffer_Init(void)
+{
+     uartTxBuffer.size = 0;
+     uartTxBuffer.lastTxTime = 0;
+     uartTxBuffer.transmitting = 0;
+     uartTxBuffer.transmissionComplete = 1;
+
+}
+
+/**/
+void sendStatus(void){
+	
+	if(millis() - uartTxBuffer.lastTxTime > 1000){//Наступило время передачи
+		
+		uartTxBuffer.lastTxTime = millis();
+		if(!!uartTxBuffer.transmissionComplete){
+				uartTxBuffer.size =	convertToJSON(&deviceStatus,&uartTxBuffer.buffer[0]);
+		     uartTxBuffer.transmissionComplete = 0;
+        
+        // Включаем прерывание передачи
+        UART_ITConfig(MDR_UART2, UART_IT_TX, ENABLE);
+        UART_SendData(MDR_UART2, uartTxBuffer.buffer[0]);
+        // Принудительно генерируем первое прерывание для начала передачи
+        //NVIC_SetPendingIRQ(UART2_IRQn);
+			
+		}
+	}
+}	
+	

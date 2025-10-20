@@ -3,11 +3,11 @@
 .\objects\menusetting.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
 .\objects\menusetting.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\menusetting.o: .\RTE\_Target_1\RTE_Components.h
-.\objects\menusetting.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
+.\objects\menusetting.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
 .\objects\menusetting.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
-.\objects\menusetting.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
-.\objects\menusetting.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
-.\objects\menusetting.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
+.\objects\menusetting.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
+.\objects\menusetting.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
+.\objects\menusetting.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
 .\objects\menusetting.o: .\RTE\Device\K1986VE1xI\system_K1986VE1xI.h
 .\objects\menusetting.o: user\GUI\manifest.h
 .\objects\menusetting.o: user\GUI\menu.h
@@ -18,6 +18,6 @@
 .\objects\menusetting.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\menusetting.o: user\GUI\mainPage.h
 .\objects\menusetting.o: .\user\allDefenition.h
-.\objects\menusetting.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_port.h
+.\objects\menusetting.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_port.h
 .\objects\menusetting.o: .\user\Display\microsoftSansSerif_8ptFont.h
 .\objects\menusetting.o: .\user\delay.h

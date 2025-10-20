@@ -17,7 +17,7 @@ UART_JSON_Parser uart_parser;
 "mute"								: 0-1																					//Беззвучный режим
 "time"								: 0-86400																			//Текущее время, в сек. с начала суток
 */
-void convertToJSON(DeviceStatus_t * model, char * data_out)
+uint16_t convertToJSON(DeviceStatus_t * model, char * data_out)
 {	
 	
 	//char str[50];
@@ -42,10 +42,17 @@ void convertToJSON(DeviceStatus_t * model, char * data_out)
 	len += sprintf(data_out + len, "\"mute\":%i,", model->isMuted);
 
 	len += sprintf(data_out + len, "\"time\":%d", (uint32_t)(getGlobalTime()/1000));
-
+	
+	//Если запужен какой-то режим, то шлем информацию о нем
+	if(deviceStatus.flagRegimOn)
+		len += sprintf(data_out + len, "\"time_to_process_end\":%d:%d:%d", 
+									deviceStatus.manualControlCurrentData.targetTimer_h,
+									deviceStatus.manualControlCurrentData.targetTimer_m, 
+									deviceStatus.manualControlCurrentData.targetTimer_s);
 	
 	data_out[len] = '}';
 	//data_out[strlen(data_out)] = 0;
+	return len;
 }
 
 /*************************** разбираем принятые данные *********************/

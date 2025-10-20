@@ -115,6 +115,17 @@ typedef struct xI2C 																//Структура софтварного 
 #define PIN_FLASH_SCK				PORT_Pin_7
 #define PIN_FLASH_CS				PORT_Pin_8
 
+/************ Структура для передачи данных по UART *******************/
+#define TX_BUFFER_SIZE 256
+typedef struct {
+    char buffer[TX_BUFFER_SIZE];
+    uint16_t size;
+    uint32_t lastTxTime;
+    uint8_t transmitting;
+		uint8_t transmissionComplete;
+} UartTxBuffer_t;
+extern UartTxBuffer_t uartTxBuffer;
+
 
 typedef enum{
     COOK_TOP_1,

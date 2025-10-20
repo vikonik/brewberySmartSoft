@@ -66,7 +66,8 @@ extern const char stringBtOn[];
 extern const char stringBtOff[];
 extern const char stringWiFiOn[];
 extern const char stringWiFiOff[];
-
+extern const char stringMuteOn[];
+extern const char stringMuteOff[];
 
 
 
