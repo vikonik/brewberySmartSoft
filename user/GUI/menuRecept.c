@@ -65,10 +65,13 @@ void printReseptProces(void){
 }
 
 /******************* Управление рецептом ***************************/
+/**/
+ 
 /**
  * @brief Меню выбора встоенных рецептов или загруженных
  */
 void printMenuReceptMain(void){
+	deviceStatus.isPowerSetting = 0;
     allMenuTextClear();
     ST7567_FB_setFont(&microsoftSansSerif_8ptFontInfo);
 		menu_Nazad.next = &m_null;

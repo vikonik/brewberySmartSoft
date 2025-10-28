@@ -14,8 +14,8 @@
 /************************ Реле **************************/
 #define RELAY_PORT  MDR_PORTF
 #define MIXER     	PORT_Pin_5
-#define HEAT_1     	PORT_Pin_7
-#define COOL_1     	PORT_Pin_8
+#define COOL_1     	PORT_Pin_7
+#define HEAT_1     	PORT_Pin_8
 
 
 /************************ Дисплей ************************/
@@ -174,6 +174,7 @@ typedef struct{
 	Connect_t isConnected;//К чему подключено устройство
 	uint8_t isLocked;// 1-заблокировано
 	uint8_t isWoshing; //Режим мойки
+	uint8_t isPowerSetting;
 }DeviceStatus_t;
 extern DeviceStatus_t deviceStatus;
 #endif

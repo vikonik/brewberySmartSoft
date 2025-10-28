@@ -32,6 +32,7 @@
 #include "state_machine.h"
 #include "menuReceptLoaded.h"
 #include "state_machineLoaded.h"
+#include "powerTuning.h"
 extern void (*mainProcess)(void);
 
 
@@ -82,7 +83,7 @@ char buf[32];
 uint32_t keyBuf[255];
 uint8_t keyBufCnt = 0;
 
-
+extern menu_t menu_ManualControl;
 extern uint8_t displayArray[];
 extern uint8_t digit[];
 uint8_t startDelayNum = 0;
@@ -100,8 +101,9 @@ uint64_t timeButtonPres = 0;
 
 uint8_t stepUnLOC = 0;
 
-/******************************************/
-
+/***************Для установки мощности***************************/
+uint8_t sliderVal = 0;
+uint8_t sliderValOld = 0;
 /****************************************/
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
@@ -146,7 +148,7 @@ int main(void){
 		}	
 		
 		if(!!(allButtonsRAW & S1)){
-			if(millis() - timeButtonLock > 3000){
+			if(millis() - timeButtonLock > 1500){
 				timeButtonLock = millis() ;
 				if(!triggerButtonLock){
 					triggerButtonLock = 1;
@@ -160,15 +162,11 @@ int main(void){
 				}
 			}
 		}
+		else{
+			timeButtonLock = millis() ;
+		}
 		
-//		if(!!deviceStatus.isLocked){
-//			delay_ms(1000);
-//			continue;
-//		}
-			
-		
-		
-		
+
 		if(ds18b20.isSensorError){//Если датчик температуры не подключен
 				heatOff();
 				nasosOff();
@@ -186,13 +184,31 @@ int main(void){
 			
 				initDevice();
 				initMenuMainPage();//Перезапускаем меню
+				timeButtonLock = millis();//Перезапустим таймер блокировки
 		}
 		
 		//Если нет блокировки, то разрешаем работу кнопок
 		if(!deviceStatus.isLocked){
 			buttonNavigationFunction();//Функции кнопок в соответствии с ситуйцией
-			checkSlider(&allButtonsRAW);
+			//checkSlider(&allButtonsRAW);
+			
+			if(m_curr == &menu_Recept ||
+			m_curr == &menu_Clearing ||     
+			m_curr == &menu_ManualControl ||
+			m_curr == &menu_Setting) {      
+				deviceStatus.isPowerSetting = 1;
+				if(!!setPower(checkSlider(&allButtonsRAW))){
+				buttonNavigationFunction = functionNull;
+				}
+				else{
+					buttonNavigationFunction = menuNavigationFunction;
+				}
+					
+				
+			}
 		}
+			
+		
 		//menuNavigation(allButtonsRAW & BUTTON_UP, allButtonsRAW & BUTTON_DN, allButtonsRAW & BUTTON_OK);
 //		
 		if(millis() - readTemperatureTimer > 1000){
@@ -203,7 +219,7 @@ int main(void){
 
 	
 		mainProcess();//Указатель на текущий процесс
-		if(!deviceStatus.isWoshing){//Если не моем пивоварню
+		if(!deviceStatus.isWoshing & !deviceStatus.isPowerSetting){//Если не моем пивоварню
 			if(!!deviceStatus.pidEnable){
 				pid_relay_control(&pid);
 			}

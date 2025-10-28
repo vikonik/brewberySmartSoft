@@ -130,7 +130,7 @@ void changeReceptValueTemperatureLoaded(uint16_t* _allButtonsRAW, ShablonlContro
 			}
 			else if(*_allButtonsRAW & BUTTON_OK){
 				//Сохраняем данные в рабочую структуру
-				deviceStatus.manualControlCurrentData.targetTemperature = control->targetTemperature;
+				deviceStatus.manualControlCurrentData.targetTemperature = control[data].targetTemperature;
 				pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
 				void setButtonNavigationToChangeValueTimerRecepte(void);
 				setMenuNavigationToChangeValueRecepteLoaded();

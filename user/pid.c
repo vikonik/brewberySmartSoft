@@ -9,14 +9,15 @@
 #define PUMP_WORK_DELAY	5
 #define PUMP_PORK_PERIOD	PUMP_WORK_DELAY + 120
 #define PUMP_STOP_PERIOD	60
+
 PIDController_t pid;
- uint16_t pumpWorkDelay = PUMP_WORK_DELAY;//Задержка на включение
- uint16_t pumpWorkPeriod = PUMP_PORK_PERIOD; //Время работы помпы
- uint16_t pumpStopPeriod = PUMP_STOP_PERIOD;//Время простоя помпы
+uint16_t pumpWorkDelay = PUMP_WORK_DELAY;//Задержка на включение
+uint16_t pumpWorkPeriod = PUMP_PORK_PERIOD; //Время работы помпы
+uint16_t pumpStopPeriod = PUMP_STOP_PERIOD;//Время простоя помпы
 uint64_t pidTimeoutCnt = 0;
 uint64_t pumpTimeoutCnt = 0;
 uint8_t relay_state = 0;
-uint16_t pumpCnt = 0;;
+uint16_t pumpCnt = 0;
 
 float current_temperature = 20.0f; // Начальная температура
 
@@ -26,8 +27,6 @@ float get_temperature() {
 }
 
 // Функция-заглушка для управления реле
-
-
 void set_heater(uint8_t state) {
     if(state)
         PORT_SetBits(RELAY_PORT, HEAT_1);  // Включить нагрев
@@ -69,6 +68,7 @@ void pid_init(PIDController_t* pid, float Kp, float Ki, float Kd, float setpoint
     pid->output = 0.0f;
     pid->output_min = -100.0f;  // -100% (полное охлаждение)
     pid->output_max = 100.0f;   // +100% (полный нагрев)
+    pid->integral_max = 25.0f;  // Максимальное значение интеграла
     pid->heating_active = 0;
     pid->cooling_active = 0;
     pid->last_time = millis();
@@ -77,14 +77,12 @@ void pid_init(PIDController_t* pid, float Kp, float Ki, float Kd, float setpoint
     // Выключить все реле при инициализации
     set_heater(0);
     set_cooler(0);
-
 }
 
 /**/
 float myFabs(float data){
 	if(data < 0)
 		data *= -1;
-
 	return data;
 }
 
@@ -100,6 +98,13 @@ void pid_set_setpoint(PIDController_t* pid, float setpoint) {
 
 // Вычисление выходного значения PID
 float pid_compute(PIDController_t* pid, float input, uint32_t current_time) {
+    // Инициализация при первом вызове
+    if (pid->last_time == 0) {
+        pid->last_time = current_time;
+        pid->prev_error = 0;
+        return 0;
+    }
+    
     // Вычисление времени с последнего вызова
     uint32_t dt_ms = current_time - pid->last_time;
     float dt = dt_ms / 1000.0f;  // Переводим в секунды
@@ -113,6 +118,8 @@ float pid_compute(PIDController_t* pid, float input, uint32_t current_time) {
     // Применяем мертвую зону к ошибке
     if(myFabs(error) <= pid->deadband) {
         error = 0.0f;
+        // Медленный сброс интеграла в мертвой зоне для предотвращения накопления
+        pid->integral *= 0.95f;
     }
     
     // Пропорциональная составляющая
@@ -121,15 +128,19 @@ float pid_compute(PIDController_t* pid, float input, uint32_t current_time) {
     // Интегральная составляющая (с учетом времени)
     pid->integral += error * dt;
     
-    // Антивинд-up интеграла
-    float integral_max = 50.0f / (pid->Ki != 0 ? pid->Ki : 1.0f);
-    if(pid->integral > integral_max) pid->integral = integral_max;
-    if(pid->integral < -integral_max) pid->integral = -integral_max;
+    // Антивинд-up интеграла (исправленная версия)
+    if(pid->integral > pid->integral_max) 
+        pid->integral = pid->integral_max;
+    if(pid->integral < -pid->integral_max) 
+        pid->integral = -pid->integral_max;
     
     float integral = pid->Ki * pid->integral;
     
     // Дифференциальная составляющая (с учетом времени)
-    float derivative = pid->Kd * (error - pid->prev_error) / dt;
+    float derivative = 0.0f;
+    if (dt > 0.001f) { // Защита от деления на ноль
+        derivative = pid->Kd * (error - pid->prev_error) / dt;
+    }
     
     pid->prev_error = error;
     pid->last_time = current_time;
@@ -138,20 +149,19 @@ float pid_compute(PIDController_t* pid, float input, uint32_t current_time) {
     pid->output = proportional + integral + derivative;
     
     // Ограничиваем выходное значение
-    if(pid->output > pid->output_max) pid->output = pid->output_max;
-    if(pid->output < pid->output_min) pid->output = pid->output_min;
+    if(pid->output > pid->output_max) 
+        pid->output = pid->output_max;
+    if(pid->output < pid->output_min) 
+        pid->output = pid->output_min;
     
     return pid->output;
 }
 
 /*
-Функция для работы ПИД регулятора с реле
-*/
-/*
-Функция для работы ПИД регулятора с реле
+Функция для работы ПИД регулятора с реле (исправленная)
 */
 void pid_relay_control(PIDController_t* pid) {
-    if(millis() - pidTimeoutCnt > 1000) {
+    if(millis() - pidTimeoutCnt >= 100) { // Уменьшен период до 100 мс для лучшего управления
         pidTimeoutCnt = millis();
         
         float temperature = get_temperature();
@@ -160,7 +170,7 @@ void pid_relay_control(PIDController_t* pid) {
         // Статические переменные для ШИМ-счетчиков
         static uint32_t pwm_counter = 0;
         pwm_counter++;
-        if(pwm_counter >= 100) pwm_counter = 0;  // 10-секундный ШИМ цикл
+        if(pwm_counter >= 100) pwm_counter = 0;  // 10-секундный ШИМ цикл (100 * 100мс = 10 сек)
         
         // Определяем текущую мощность в процентах
         float heat_power = 0.0f;
@@ -180,8 +190,8 @@ void pid_relay_control(PIDController_t* pid) {
             cool_power = 0.0f;
         }
         
-        // Управление нагревателем с ШИМ (ИСПРАВЛЕННАЯ логика)
-        if(pwm_counter < (heat_power / 1/*10.0f*/)) {
+        // Управление нагревателем с ШИМ (исправленная логика)
+        if(heat_power > 0.1f && pwm_counter < (uint32_t)heat_power) {
             set_heater(1);
             pid->heating_active = 1;
         } else {
@@ -189,8 +199,8 @@ void pid_relay_control(PIDController_t* pid) {
             pid->heating_active = 0;
         }
         
-        // Управление охладителем с ШИМ (ИСПРАВЛЕННАЯ логика)
-        if(pwm_counter < (cool_power / 1 /*10.0f*/)) {
+        // Управление охладителем с ШИМ (исправленная логика)
+        if(cool_power > 0.1f && pwm_counter < (uint32_t)cool_power) {
             set_cooler(1);
             pid->cooling_active = 1;
         } else {

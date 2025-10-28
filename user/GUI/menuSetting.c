@@ -34,7 +34,10 @@ MENU_ADD(menu_SettingNazad, m_null,  						menu_Mute,  		menu_Recept, allMenuTex
 
 
 /**/
+
+/**/
 void printMenuSetting(void){
+	deviceStatus.isPowerSetting = 0;
     allMenuTextClear();
     ST7567_FB_setFont(&microsoftSansSerif_8ptFontInfo);
 	

@@ -516,6 +516,16 @@
               <FileType>5</FileType>
               <FilePath>.\user\ToDo List.txt</FilePath>
             </File>
+            <File>
+              <FileName>powerTuning.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\user\powerTuning.c</FilePath>
+            </File>
+            <File>
+              <FileName>powerTuning.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\powerTuning.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

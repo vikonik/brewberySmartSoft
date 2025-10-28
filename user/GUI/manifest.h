@@ -68,7 +68,7 @@ extern const char stringWiFiOn[];
 extern const char stringWiFiOff[];
 extern const char stringMuteOn[];
 extern const char stringMuteOff[];
-
+extern const char stringSetPower[];
 
 
 

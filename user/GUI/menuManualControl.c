@@ -84,6 +84,7 @@ MENU_ADD(menu_Fermentation,		menu_Nazad,  				menu_Cold,        m_null, printSha
 
 /**/
 void printMenuManualControl(void){
+	deviceStatus.isPowerSetting = 0;
     allMenuTextClear();
     ST7567_FB_setFont(&microsoftSansSerif_8ptFontInfo);
 		menu_Nazad.next = &m_null;

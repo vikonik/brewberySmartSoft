@@ -12,6 +12,7 @@
 ".\objects\pid.o"
 ".\objects\mdr32_uart.o"
 ".\objects\tempsensor.o"
+".\objects\powertuning.o"
 ".\objects\grapf.o"
 ".\objects\microsoftsansserif_8ptfont.o"
 ".\objects\microsoftsansserif22pts_digit.o"

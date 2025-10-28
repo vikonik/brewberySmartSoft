@@ -54,6 +54,7 @@ static void displayTimeRemaining(uint16_t timeRemaining, uint8_t posY){
  * @brief Initializes and displays the cleaning menu state 1
  */
 void printMenuClearingState_1(void){
+	deviceStatus.isPowerSetting = 0;
     configureMenuButtons(returnMenuClearingState_1, woshingProcessStart, 
                        stringOtmena,16,50, stringBegin, 80, 50);
     menu_Nazad.select = &m_null;

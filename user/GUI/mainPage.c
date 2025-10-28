@@ -125,6 +125,7 @@ void printMainPage(DeviceStatus_t *status){
 
 /**/
 void initMenuMainPage(void){
+	deviceStatus.isPowerSetting = 1;
 	MENU_Init(&menu_Recept);
 }
 

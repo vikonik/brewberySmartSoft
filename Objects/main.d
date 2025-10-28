@@ -43,3 +43,4 @@
 .\objects\main.o: .\user\Recept\state_machine.h
 .\objects\main.o: .\user\GUI\menuReceptLoaded.h
 .\objects\main.o: .\user\Recept\state_machineLoaded.h
+.\objects\main.o: user\powerTuning.h

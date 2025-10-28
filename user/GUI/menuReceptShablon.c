@@ -183,7 +183,7 @@ void changeValue(uint16_t* _allButtonsRAW, ShablonlControl_t *control, uint8_t d
 			}
 			else if(*_allButtonsRAW & BUTTON_OK){
 				//Сохраняем данные в рабочую структуру
-				deviceStatus.manualControlCurrentData.targetTemperature = control->targetTemperature;
+				deviceStatus.manualControlCurrentData.targetTemperature = control[data].targetTemperature;
 				pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
 				setMenuNavigationToChangeValue();
 				MENU_Init(&menu_ShablonTempersture);

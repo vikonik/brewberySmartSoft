@@ -10,7 +10,7 @@ const char stringBegin[] = "Начать";
 
 //const uint8_t charHeight8pt = 12; //13-1
 const char stringRecept[] = "Рецепт";
-const char stringClearing[] = "Очистка";
+const char stringClearing[] = "Самоочистка";
 const char stringManualControl[] = "Ручное управление";
 const char stringSetting[] = "Настройка";
 
@@ -67,6 +67,7 @@ const char stringWiFiOn[] =  "WiFi Вкл.";
 const char stringWiFiOff[] = "WiFi Откл.";
 const char stringMuteOn[] = "Звук Вкл.";
 const char stringMuteOff[] = "Звук Откл.";
+const char stringSetPower[] = "Мощность";
 
 
 
