@@ -55,10 +55,10 @@
 
 #define BUTTON_PRESS_DELAY 2000 //Долгое нажате кнопки
 
-#define BUTTON_UP	0x0004
-#define BUTTON_DN 0x0008
-//								0x0010
-#define BUTTON_OK 0x0020
+#define BUTTON_UP			0x0004
+#define BUTTON_DN 		0x0008
+#define BUTTON_OK		0x0010
+#define BUTTON_LOCK 		0x0020
 
 #define S1 0x0800
 #define S2 0x0400

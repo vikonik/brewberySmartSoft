@@ -147,7 +147,7 @@ int main(void){
 			}
 		}	
 		
-		if(!!(allButtonsRAW & S1)){
+		if(!!(allButtonsRAW & BUTTON_LOCK)){
 			if(millis() - timeButtonLock > 1500){
 				timeButtonLock = millis() ;
 				if(!triggerButtonLock){

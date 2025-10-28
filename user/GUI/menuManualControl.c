@@ -161,6 +161,7 @@ void printShablonManalControl(void){
 	//printShablon(receptControl, &menu_ShablonTempersture, &menu_ShablonTime, &label_ShablonTemperature, &label_ShablonTimer);
 
 	printShablon(receptControl, &menu_ShablonTempersture, &menu_ShablonTime);
+
 }
 
 

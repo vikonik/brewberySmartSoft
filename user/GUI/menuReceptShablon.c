@@ -32,10 +32,16 @@ void shablonExecute(void);
 
 void (*shablonExecuteSetFunction)(void);
 static const uint8_t firstStringH = 15;
-
+static char bufTemp[8];
 
 char *currentProcessBuf;//[16];//Назваие текущего процесса атоматического нецепта
-ShablonlControl_t receptControl[5];
+ShablonlControl_t receptControl[5] = {
+ {25.0f},
+ {25.0f},
+ {25.0f},
+ {25.0f},
+ {25.0f}
+};
 //Текст таблицы
 MenuText_t label_Temperature = {stringTemperature, 1, firstStringH + charHeight8pt * 1};
 MenuText_t label_Time = {stringTime, 1, firstStringH + charHeight8pt * 2};
@@ -128,7 +134,10 @@ menuTime->text->text = getTimerStr(control, *menuTime->data);
 	//labelTime->text = getTimerStr(control, menuTime);
 	
 	MENU_Init(menuTemperature);
-	
+	    sprintf(bufTemp, "%02.1f", deviceStatus.temperatureCurrent);
+		label_ShablonCurentTemperature.text = bufTemp;
+ST7567_FB_printText(label_ShablonCurentTemperature.posX, label_ShablonCurentTemperature.posY, (char*)label_ShablonCurentTemperature.text, NORMAL);
+ST7567_FB_display();
 }
 
 /**/
@@ -376,7 +385,7 @@ void shablonPrintCurrentData(void){
 Выполняем действия в соответствии с выбранным шаблоном
 */
 void shablonExecute(void){
-	  static char bufTemp[8];
+	  //static char bufTemp[8];
 		static char bufTime[8];
 		static uint64_t shablonExecutePeriod = 0;
 		static uint64_t curentTic = 0;
