@@ -4,9 +4,9 @@
 .\objects\microsoftsansserif22pts_digit.o: user\Display\font.h
 .\objects\microsoftsansserif22pts_digit.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
 .\objects\microsoftsansserif22pts_digit.o: .\RTE\_Target_1\RTE_Components.h
-.\objects\microsoftsansserif22pts_digit.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
+.\objects\microsoftsansserif22pts_digit.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
 .\objects\microsoftsansserif22pts_digit.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
-.\objects\microsoftsansserif22pts_digit.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
-.\objects\microsoftsansserif22pts_digit.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
-.\objects\microsoftsansserif22pts_digit.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
+.\objects\microsoftsansserif22pts_digit.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
+.\objects\microsoftsansserif22pts_digit.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
+.\objects\microsoftsansserif22pts_digit.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
 .\objects\microsoftsansserif22pts_digit.o: .\RTE\Device\K1986VE1xI\system_K1986VE1xI.h

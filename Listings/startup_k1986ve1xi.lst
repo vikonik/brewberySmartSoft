@@ -515,19 +515,19 @@ AK]
               00000000 
 Command Line: --debug --xref --cpreproc --diag_suppress=9931 --cpu=Cortex-M1 --
 apcs=interwork --depend=.\objects\startup_k1986ve1xi.d -o.\objects\startup_k198
-6ve1xi.o -I.\RTE\Device\K1986VE1xI -I.\RTE\_Target_1 -IC:\Keil_v5\ARM\PACK\Mila
-ndr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1 -IC:\Keil_v5\ARM\
-PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI
+6ve1xi.o -I.\RTE\Device\K1986VE1xI -I.\RTE\_Target_1 -IC:\Users\User\AppData\Lo
+cal\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1
+ -IC:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSI
 
 
 
 ARM Macro Assembler    Page 9 
 
 
-\inc -IC:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc 
--IC:\Keil_v5\ARM\CMSIS\Include --predefine="__UVISION_VERSION SETA 526" --prede
-fine="_RTE_ SETA 1" --list=.\listings\startup_k1986ve1xi.lst RTE\Device\K1986VE
-1xI\startup_K1986VE1xI.S
+S\MDR32FxQI\DeviceSupport\K1986VE1xI\inc -IC:\Users\User\AppData\Local\Arm\Pack
+s\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc -IC:\Keil_v5\ARM\CMSIS\In
+clude --predefine="__UVISION_VERSION SETA 528" --predefine="_RTE_ SETA 1" --lis
+t=.\listings\startup_k1986ve1xi.lst RTE\Device\K1986VE1xI\startup_K1986VE1xI.S
 
 
 

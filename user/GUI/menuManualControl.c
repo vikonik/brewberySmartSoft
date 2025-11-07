@@ -140,7 +140,7 @@ void shablonSetFunctionManualControl(void){
 /**/
 void printShablonManalControl(void){
 	
-	if(m_curr == &menu_Mesh || m_curr == &menu_Filtracion ||m_curr == &menu_Nagrev ||m_curr == &menu_Cold ||m_curr == &menu_Fermentation ){
+//	if(m_curr == &menu_Mesh || m_curr == &menu_Filtracion ||m_curr == &menu_Nagrev ||m_curr == &menu_Cold ||m_curr == &menu_Fermentation ){
 	    //ST7567_FB_setFont(&microsoftSansSerif_8ptFontInfo);
 		menu_ShablonNazad.next = &menu_ShablonState;
 		menu_ShablonNazad.previous = &menu_ShablonTime;
@@ -161,8 +161,10 @@ void printShablonManalControl(void){
 	//menu_ShablonState.func = shablonSetFunctionManualControl;
 	//printShablon(receptControl, &menu_ShablonTempersture, &menu_ShablonTime, &label_ShablonTemperature, &label_ShablonTimer);
 
+
+deviceStatus.m_manual = m_curr;//Теперь знаем какой режим выбран
 	printShablon(receptControl, &menu_ShablonTempersture, &menu_ShablonTime);
-}
+//}
 }
 
 

@@ -447,12 +447,20 @@ shablonExecutePeriod = curentTic;
 void distanceSetTemperature(float newTemperature, void(*func)(void)){
 	if(m_curr != &menu_ShablonTempersture && m_curr != &menu_ShablonTime && m_curr != &menu_ShablonNazad && m_curr != &menu_ShablonState)
 		return;
+//	if(deviceStatus.m_manual != &menu_ShablonTempersture 
+//		&& deviceStatus.m_manual != &menu_ShablonTime 
+//	&& deviceStatus.m_manual != &menu_ShablonNazad 
+//	&& deviceStatus.m_manual != &menu_ShablonState)
 
-	manualControl[*m_curr->data].targetTemperature = newTemperature;
-	deviceStatus.manualControlCurrentData.targetTemperature = manualControl[*m_curr->data].targetTemperature;
+	receptControl[*deviceStatus.m_manual->data].targetTemperature = newTemperature;
+	manualControl[*deviceStatus.m_manual->data].targetTemperature = newTemperature;
+	deviceStatus.manualControlCurrentData.targetTemperature = manualControl[*deviceStatus.m_manual->data].targetTemperature;
 	pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
-	func();
+	//func();
 	//printShablonManalControl();
+	printShablon(manualControl, &menu_ShablonTempersture, &menu_ShablonTime);//receptControl
+
+	
 }
 /*
 устанавливаем время через удаленное соединение
@@ -466,7 +474,9 @@ void distanceSetTimer(uint16_t newTimer, void(*func)(void)){
 	deviceStatus.manualControlCurrentData.targetTimer_m =  manualControl[*m_curr->data].targetTimer_m; 
 	deviceStatus.manualControlCurrentData.targetTimer_s = 0;
 	//printShablonManalControl();
-	func();
+	//func();
+	printShablon(manualControl, &menu_ShablonTempersture, &menu_ShablonTime);//receptControl
+
 }
  
 /*************************************************************/

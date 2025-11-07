@@ -8,7 +8,7 @@
 #include "MDR32FxQI_config.h"           // Milandr::Device:Startup
 #include "MDR32FxQI_port.h"             // Milandr::Drivers:PORT
 
-
+#include "menu.h"
 
 
 /************************ Реле **************************/
@@ -185,6 +185,8 @@ typedef struct{
 	uint8_t isWoshing; //Режим мойки
 	uint8_t isPowerSetting;
 	DeviceType_t dev_type;
+	uint8_t isManual;
+	menu_t *m_manual;
 }DeviceStatus_t;
 extern DeviceStatus_t deviceStatus;
 #endif

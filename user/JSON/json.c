@@ -328,25 +328,27 @@ void parse_json_data(const char *json, uint16_t json_length, DeviceStatus_t *dat
 		uint32_t newTime = 0;
 		uint16_t newTimer = 0;
     // Инициализация значений по умолчанию
-    my_strncpy(data->id, "unknown", sizeof(data->id));
-    data->woshingTime = 0;
-    data->temperatureCurrent = 0.0;
-    data->temperatureTurget = 0;
-    data->flagRegimOn = 0;
-    data->pidEnable = 0;
-    data->btStatus = 0;
-    data->wifiStatus = 0;
-    data->isMuted = 0;
+//    my_strncpy(data->id, "unknown", sizeof(data->id));
+//    data->woshingTime = 0;
+//    data->temperatureCurrent = 0.0;
+//    data->temperatureTurget = 0;
+//    data->flagRegimOn = 0;
+//    data->pidEnable = 0;
+//    data->btStatus = 0;
+//    data->wifiStatus = 0;
+//    data->isMuted = 0;
     
     // Парсим поля
     parse_string_field(json, json_length, "id", data->id, sizeof(data->id));
     parse_float_field(json, json_length, "temperature_current", &data->temperatureCurrent);
     if(parse_uint8_field(json, json_length, "heat_temperature", &data->temperatureTurget)){
-			distanceSetTemperature(data->temperatureTurget, funcTimer);
-		}
-		if(parse_uint16_field(json, json_length, "timer", &newTimer)){
-			 distanceSetTimer(newTimer, funcTimer);
-		}
+		distanceSetTemperature(data->temperatureTurget, funcTimer);
+	}
+	if(parse_uint16_field(json, json_length, "timer", &newTimer)){
+		
+		//newTimer = 600;
+			distanceSetTimer(newTimer, funcTimer);
+	}
     parse_uint8_field(json, 	json_length, "mute", &data->isMuted);
     parse_uint16_field(json, 	json_length, "washing_time", &data->woshingTime);
     parse_uint8_field(json, 	json_length, "flag_regim_on", &data->flagRegimOn);
