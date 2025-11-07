@@ -105,9 +105,17 @@ uint8_t stepUnLOC = 0;
 uint8_t sliderVal = 0;
 uint8_t sliderValOld = 0;
 /****************************************/
+
+//Отладка
+uint8_t trigCmd = 0;
+char strCmd[] = "{\"id\":\"00000000-0000-0000-0000-000000000000\\0\",\"temperature_current\":0,\"heat_temperature\":40,\"timer\":0,\"mute\":0,\"washing_time\":0,\"flag_regim\":0,\"pid_enable\":0,\"bt_status\":0,\"wifi_status\":1,\"isConnected\":true,\"setTime\":47926}";	
+
+
+/*********************/
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
 	deviceStatus.isMuted = 0;
+	deviceStatus.dev_type = BREWBERRY;
 	pid_init(&pid, 2.0, 0.1, 0.5, 22.0);
 	initDevice();
 	
@@ -123,12 +131,36 @@ int main(void){
 	initMenuMainPage();
 	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
 
+//	while(1){
+//		//char strCmd[] = "{\"heat_temperature\":85}\0";
+////char strCmd[] = "{\"id\":\"00000000-0000-0000-0000-000000000000\\0\",\"temperature_current\":0,\"heat_temperature\":40,\"timer\":0,\"mute\":0,\"washing_time\":0,\"flag_regim\":0,\"pid_enable\":0,\"bt_status\":0,\"wifi_status\":1,\"isConnected\":true,\"setTime\":47926}";	
+//		
+//		uart_parser.head = 0;
+//		while(uart_parser.head < 224){//strCmd[uart_parser.head] !
+//			uart_parser.buffer[uart_parser.head] = strCmd[uart_parser.head];
+//			uart_parser.head++;
+//		}
+//		
+//		process_incoming_json(&uart_parser, &deviceStatus);
+//		
+//		while(1){}//ntrol = {"id":"brewery1","temperature_current":0,"heat_temperature":40,"timer":0,"mute":0,"washing_time":0,"flag_regim":0,"pid_enable":0,"bt_status":0,"wifi_status":1,"isConnected":true,"setTime":47926}
+//}
 	while(1){
 	printMainPage(&deviceStatus);
 	
-
+if(trigCmd == 1){
+	uart_parser.head = 0;
+	uart_parser.tail = 0;
+	uart_parser.last_json_length = 0;
+	
+		while(uart_parser.head < 224){//strCmd[uart_parser.head] !
+			uart_parser.buffer[uart_parser.head] = strCmd[uart_parser.head];
+			uart_parser.head++;
+		}
+		trigCmd = 0;
+}
 		// Обработка входящих JSON сообщений
-	//process_incoming_json(&uart_parser, &deviceStatus);
+	process_incoming_json(&uart_parser, &deviceStatus);
 	
 //	if(millis() - reinitButton > (1*30*1000)){
 //		reinitButton = millis();

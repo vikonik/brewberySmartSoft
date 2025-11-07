@@ -159,6 +159,15 @@ typedef struct{
 }ShablonlControl_t;
 extern ShablonlControl_t manualControl[];
 
+typedef enum{
+	NO_NAME,
+	BREWBERRY,
+	PLITA_EL,
+	PLITA_IND,
+	OWEN
+}DeviceType_t;
+
+
 typedef struct{
 	char id[39];													// ID устройства, "00000000-0000-0000-0000-000000000000" + символ конца строки
 	uint16_t woshingTime;//Оставшееся время мойки, ополаскивания. дезинфекции
@@ -175,6 +184,7 @@ typedef struct{
 	uint8_t isLocked;// 1-заблокировано
 	uint8_t isWoshing; //Режим мойки
 	uint8_t isPowerSetting;
+	DeviceType_t dev_type;
 }DeviceStatus_t;
 extern DeviceStatus_t deviceStatus;
 #endif

@@ -24,8 +24,8 @@ uint16_t convertToJSON(DeviceStatus_t * model, char * data_out)
 	data_out[0] = '{';
 	size_t len = 1; // Уже есть '{'
 	
-	len += sprintf(data_out + len, "\"id\":%s,", model->id);
-
+	len += sprintf(data_out + len, "\"id\":\"%s\",", model->id);
+	len += sprintf(data_out + len, "\"dev_type\":%d,", model->dev_type);
 	
 	len += sprintf(data_out + len, "\"temperature_current\":%.1f,", model->temperatureCurrent);
 	//strcat(data_out, str);	
@@ -351,17 +351,17 @@ void parse_json_data(const char *json, uint16_t json_length, DeviceStatus_t *dat
     parse_uint16_field(json, 	json_length, "washing_time", &data->woshingTime);
     parse_uint8_field(json, 	json_length, "flag_regim_on", &data->flagRegimOn);
     parse_uint8_field(json, 	json_length, "pid_enable", &data->pidEnable);
-    if(parse_uint8_field(json, 	json_length, "bt_status", &data->btStatus)){
-			changeBtState();
-		}
-    if(parse_uint8_field(json, 	json_length, "wifi_status", &data->wifiStatus)){
-			cahageWiFiState();
-		}
+//    if(parse_uint8_field(json, 	json_length, "bt_status", &data->btStatus)){
+//			changeBtState();
+//		}
+//    if(parse_uint8_field(json, 	json_length, "wifi_status", &data->wifiStatus)){
+//			cahageWiFiState();
+//		}
 		parse_uint8_field(json, 	json_length, "isConnected", (uint8_t*)&data->isConnected);
 		parse_uint32_field(json, 	json_length, "setTime", &newTime);
 		setGlobalTime(newTime);
-		if(!deviceStatus.isMuted)
-			beep(1);
+		//if(!deviceStatus.isMuted)
+			//beep(1);
 }
 
 // Вывод данных

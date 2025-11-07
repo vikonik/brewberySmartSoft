@@ -29,7 +29,9 @@ uint32_t getGlobalTime(void){
 	return sysTickGlobalTime;
 }
 
-/**/
+/*
+globalTime - Время в секундах
+*/
 void setGlobalTime(uint32_t globalTime){
-	sysTickGlobalTime = globalTime;
+	sysTickGlobalTime = globalTime * 1000;
 }

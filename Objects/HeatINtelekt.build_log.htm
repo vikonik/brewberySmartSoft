@@ -27,11 +27,18 @@ Project File Date:  10/27/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling slider.c...
+compiling menuSetting.c...
+user\GUI\menuSetting.c(221): warning:  #177-D: variable "globalTime"  was declared but never referenced
+  	uint64_t globalTime;
+user\GUI\menuSetting.c: 1 warning, 0 errors
+compiling json.c...
+user\JSON\json.c(75): warning:  #177-D: function "string_length"  was declared but never referenced
+  static int string_length(const char *str, int max_len) {
+user\JSON\json.c: 1 warning, 0 errors
 linking...
-Program Size: Code=40296 RO-data=5732 RW-data=2420 ZI-data=12852  
+Program Size: Code=43636 RO-data=5732 RW-data=2644 ZI-data=12852  
 FromELF: creating hex file...
-".\Objects\HeatINtelekt.axf" - 0 Error(s), 0 Warning(s).
+".\Objects\HeatINtelekt.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -59,14 +66,14 @@ Package Vendor: Milandr
 <h2>Collection of Component Files used:</h2>
 
    * Component: Milandr::Device:Startup:2.2.0i
-      Source file:   Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\startup\system_K1986VE1xI.c
       Include file:  Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\startup\system_K1986VE1xI.h
       Include file:  Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
-      Include file:  Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
-      Include file:  Libraries\SPL\MDR32FxQI\inc\IRQ_Handler_Template\K1986VE1xI_IT.h
-      Source file:   Libraries\SPL\MDR32FxQI\src\IRQ_Handler_Template\K1986VE1xI_IT.c
       Source file:   Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\startup\arm\startup_K1986VE1xI.S
       Include file:  Libraries\SPL\MDR32FxQI\MDR32FxQI_config.h
+      Include file:  Libraries\SPL\MDR32FxQI\inc\IRQ_Handler_Template\K1986VE1xI_IT.h
+      Include file:  Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
+      Source file:   Libraries\SPL\MDR32FxQI\src\IRQ_Handler_Template\K1986VE1xI_IT.c
+      Source file:   Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\startup\system_K1986VE1xI.c
 
    * Component: Milandr::Drivers:BKP:2.2.0i
       Include file:  Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_bkp.h
@@ -98,10 +105,10 @@ Package Vendor: Milandr
       Include file:  Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_uart.h
 
    * Component: Milandr::Drivers:UTILS:1.2.0i
-      Source file:   Libraries\SPL\MDR32FxQI\src\MDR32FxQI_asm.S
       Include file:  Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_utils.h
       Source file:   Libraries\SPL\MDR32FxQI\src\MDR32FxQI_utils.c
-Build Time Elapsed:  00:00:03
+      Source file:   Libraries\SPL\MDR32FxQI\src\MDR32FxQI_asm.S
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
