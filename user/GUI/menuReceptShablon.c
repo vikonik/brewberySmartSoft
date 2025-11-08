@@ -453,12 +453,12 @@ void distanceSetTemperature(float newTemperature, void(*func)(void)){
 //	&& deviceStatus.m_manual != &menu_ShablonState)
 
 	receptControl[*deviceStatus.m_manual->data].targetTemperature = newTemperature;
-	manualControl[*deviceStatus.m_manual->data].targetTemperature = newTemperature;
-	deviceStatus.manualControlCurrentData.targetTemperature = manualControl[*deviceStatus.m_manual->data].targetTemperature;
+	receptControl[*deviceStatus.m_manual->data].targetTemperature = newTemperature;
+	deviceStatus.manualControlCurrentData.targetTemperature = receptControl[*deviceStatus.m_manual->data].targetTemperature;
 	pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
 	//func();
 	//printShablonManalControl();
-	printShablon(manualControl, &menu_ShablonTempersture, &menu_ShablonTime);//receptControl
+	printShablon(receptControl, &menu_ShablonTempersture, &menu_ShablonTime);//receptControl
 
 	
 }
@@ -468,14 +468,14 @@ void distanceSetTemperature(float newTemperature, void(*func)(void)){
 void distanceSetTimer(uint16_t newTimer, void(*func)(void)){
 	if(m_curr != &menu_ShablonTempersture && m_curr != &menu_ShablonTime && m_curr != &menu_ShablonNazad && m_curr != &menu_ShablonState)
 		return;
-	manualControl[*m_curr->data].targetTimer_h = newTimer / 60; 
-	manualControl[*m_curr->data].targetTimer_m = newTimer % 60; 
-	deviceStatus.manualControlCurrentData.targetTimer_h =  manualControl[*m_curr->data].targetTimer_h;//Дублируем пересчет
-	deviceStatus.manualControlCurrentData.targetTimer_m =  manualControl[*m_curr->data].targetTimer_m; 
+	receptControl[*m_curr->data].targetTimer_h = newTimer / 60; 
+	receptControl[*m_curr->data].targetTimer_m = newTimer % 60; 
+	deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[*m_curr->data].targetTimer_h;//Дублируем пересчет
+	deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[*m_curr->data].targetTimer_m; 
 	deviceStatus.manualControlCurrentData.targetTimer_s = 0;
 	//printShablonManalControl();
 	//func();
-	printShablon(manualControl, &menu_ShablonTempersture, &menu_ShablonTime);//receptControl
+	printShablon(receptControl, &menu_ShablonTempersture, &menu_ShablonTime);//receptControl
 
 }
  

@@ -31,7 +31,7 @@ ShablonlControl_t manualControl[5] = {
     {
         .targetTemperature = 0.0,
         .targetTimer_h = 0,
-        .targetTimer_m = 10,
+        .targetTimer_m = 0,
         .state = 0
     },
     {
@@ -115,8 +115,8 @@ void shablonSetFunctionManualControl(void){
 		//Сотрем надпись
 		ST7567_FB_fillRect(label_ShablonNazad.posX, label_ShablonNazad.posY, 45, 13, 0);	
 		//Копируем установки таймера в рабочую структуру
-		deviceStatus.manualControlCurrentData.targetTimer_h =  manualControl[*menu_ShablonTime.data].targetTimer_h;//Дублируем пересчет
-		deviceStatus.manualControlCurrentData.targetTimer_m =  manualControl[*menu_ShablonTime.data].targetTimer_m; 
+		deviceStatus.manualControlCurrentData.targetTimer_h =  receptControl[*menu_ShablonTime.data].targetTimer_h;//Дублируем пересчет
+		deviceStatus.manualControlCurrentData.targetTimer_m =  receptControl[*menu_ShablonTime.data].targetTimer_m; 
 		deviceStatus.manualControlCurrentData.targetTimer_s = 0;
 		pid_set_setpoint(&pid, deviceStatus.manualControlCurrentData.targetTemperature);
 		deviceStatus.pidEnable = 1;
