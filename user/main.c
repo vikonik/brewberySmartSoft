@@ -33,6 +33,10 @@
 #include "menuReceptLoaded.h"
 #include "state_machineLoaded.h"
 #include "powerTuning.h"
+#include "recipe_manager.h"
+
+#include <string.h>
+
 extern void (*mainProcess)(void);
 
 
@@ -109,8 +113,12 @@ uint8_t sliderValOld = 0;
 //Отладка
 uint8_t trigCmd = 0;
 char strCmd[] = "{\"id\":\"00000000-0000-0000-0000-000000000000\\0\",\"temperature_current\":0,\"heat_temperature\":40,\"timer\":0,\"mute\":0,\"washing_time\":0,\"flag_regim\":0,\"pid_enable\":0,\"bt_status\":0,\"wifi_status\":1,\"isConnected\":true,\"setTime\":47926}";	
-
-
+	const char *_recept = "{\"abv\":500,\"beerColor\":20,\"boilTime\":60,\"crc16\":12345,\"fermentationDays\":21,\"fermentationTemp\":100,\"hopAdditionsCount\":2,\"hops\":[{\"amount\":250,\"hopType\":\"HOP_TYPE_HALLERTAUER\",\"time\":60},{\"amount\":50,\"hopType\":\"HOP_TYPE_TETTNANG\",\"time\":15},{\"amount\":0,\"hopType\":\"\",\"time\":0},{\"amount\":0,\"hopType\":\"\",\"time\":0},{\"amount\":0,\"hopType\":\"\",\"time\":0},{\"amount\":0,\"hopType\":\"\",\"time\":0},{\"amount\":0,\"hopType\":\"\",\"time\":0},{\"amount\":0,\"hopType\":\"\",\"time\":0}],\"ibu\":18,\"mashStages\":[{\"temperature\":680,\"time\":70,\"type\":\"STAGE_TYPE_SACCHARIFICATION\"},{\"temperature\":780,\"time\":10,\"type\":\"STAGE_TYPE_MASH_OUT\"},{\"temperature\":0,\"time\":0,\"type\":\"\"},{\"temperature\":0,\"time\":0,\"type\":\"\"},{\"temperature\":0,\"time\":0,\"type\":\"\"}],\"mashStagesCount\":2,\"name\":\"Pshenichnoe\",\"nameLength\":11,\"originalGravity\":1052,\"recipe\":1,\"recipeUid\":1145981772,\"targetGravity\":1014,\"version\":1}";
+	int length = 0;
+Recipe_t _newRecept;
+char recept_names[5][32];
+uint8_t receptFind = 0;
+extern uint8_t receptBuf[];
 /*********************/
 int main(void){
 	mainProcess = functionNull;//Ставим затычку.
@@ -120,14 +128,31 @@ int main(void){
 	initDevice();
 	
 	/****************************/
-//preSetRecepteToFlash();
-	
+
+//preSetRecepteToFlash((Recipe_t*)receptBuf );
+	clearAllRecept();
 	/****************************/
-//while(1){}
-//	UART_SendData(WiFI_UART, 0x55);
-//	delay_ms(100);
-//}
+	
+	receptFind = Recipe_GetNames(recept_names, 5);
+
+
  // expressTest();
+	
+//	length = strlen(_recept);
+////	parse_recipe_json(_recept,length, &_newRecept);
+//	
+//			uart_parser.head = 0;
+//		while(uart_parser.head < length){//strCmd[uart_parser.head] !
+//			uart_parser.buffer[uart_parser.head] = _recept[uart_parser.head];
+//			uart_parser.head++;
+//		}
+//		
+//		process_incoming_json(&uart_parser, &deviceStatus);
+//	receptFind = Recipe_GetNames(recept_names, 5);
+//	while(1){
+//	
+//	}
+	
 	initMenuMainPage();
 	buttonNavigationFunction = menuNavigationFunction;//Установили функции кнопок
 

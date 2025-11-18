@@ -2,12 +2,15 @@
 #include "allDefenition.h"
 #include "delay.h"
 #include <stdio.h>
+#include "string.h"
 #include "menuManualControl.h"
 #include "menuSetting.h"
 #include "menuManualControl.h"
+#include "recept.h"
+#include "recipe_manager.h"
 
 void beep(uint8_t num);
-
+Recipe_t newRecept;
 UART_JSON_Parser uart_parser;
 
 /*
@@ -33,7 +36,7 @@ uint16_t convertToJSON(DeviceStatus_t * model, char * data_out)
 //	strcat(data_out, str);
 //	sprintf(str, "\"heat\":%i,", model->Heat);
 //	strcat(data_out, str);
-	len += sprintf(data_out + len, "\"heat_temperature\":%i,", model->temperatureTurget);
+	len += sprintf(data_out + len, "\"heat_temperature\":%i,", (uint16_t)model->manualControlCurrentData.targetTemperature);//model->temperatureTurget
 
 	
 //	sprintf(str, "\"mode\":\"%s\",", mode_as_string[model->mode]);
@@ -41,14 +44,16 @@ uint16_t convertToJSON(DeviceStatus_t * model, char * data_out)
 	
 	len += sprintf(data_out + len, "\"mute\":%i,", model->isMuted);
 
+	//Если запужен какой-то режим, то шлем информацию о нем
+	if(deviceStatus.flagRegimOn)
+		len += sprintf(data_out + len, "\"time_to_process_end\":%d,", 
+									deviceStatus.manualControlCurrentData.targetTimer_h*3600+
+									deviceStatus.manualControlCurrentData.targetTimer_m*60+ 
+									deviceStatus.manualControlCurrentData.targetTimer_s);
+	
 	len += sprintf(data_out + len, "\"time\":%d", (uint32_t)(getGlobalTime()/1000));
 	
 	//Если запужен какой-то режим, то шлем информацию о нем
-	if(deviceStatus.flagRegimOn)
-		len += sprintf(data_out + len, "\"time_to_process_end\":%d:%d:%d", 
-									deviceStatus.manualControlCurrentData.targetTimer_h,
-									deviceStatus.manualControlCurrentData.targetTimer_m, 
-									deviceStatus.manualControlCurrentData.targetTimer_s);
 	
 	data_out[len] = '}';
 	//data_out[strlen(data_out)] = 0;
@@ -298,7 +303,35 @@ static int parse_uint8_field(const char *json, uint16_t json_length, const char 
 static int parse_uint16_field(const char *json, uint16_t json_length, const char *field, uint16_t *output) {
     int temp;
     if (parse_int_field(json, json_length, field, &temp)) {
-        *output = (uint16_t)temp;
+			  // Проверка указателя
+        if (output == NULL) {
+            return 0;
+        }
+        
+//        // Проверка выравнивания (адрес должен быть кратен 2 для uint16_t)
+//        if (((uint32_t)output & 0x1) != 0) {
+//            // Невыровненный доступ!
+//            return 0;
+//        }
+//        
+        // Проверка что адрес в допустимой RAM области
+        uint32_t addr = (uint32_t)output;
+        if (addr < 0x20000000 || addr >= 0x20010000) { // подстройте под вашу MCU
+            return 0;
+        }
+        // Побайтовая запись - работает с любым выравниванием
+        uint16_t value = (uint16_t)temp;
+        uint8_t *byte_ptr = (uint8_t*)output;
+        byte_ptr[0] = (uint8_t)(value & 0xFF);        // Младший байт
+        byte_ptr[1] = (uint8_t)((value >> 8) & 0xFF); // Старший байт				
+				
+        // Для невыровненных адресов используем memcpy
+//        if (((uint32_t)output & 0x1) != 0) {
+//            uint16_t value = (uint16_t)temp;
+//            memcpy(output, &value, sizeof(uint16_t));
+//        } else {
+//            *output = (uint16_t)temp;
+//        }
         return 1;
     }
     return 0;
@@ -312,6 +345,251 @@ static int parse_uint32_field(const char *json, uint16_t json_length, const char
     }
     return 0;
 }
+
+// Функция для парсинга одного элемента хмеля по индексу
+// Вспомогательная функция для поиска начала массива
+static uint16_t find_array_start(const char *json, uint16_t json_length, const char *array_name) {
+    char search_pattern[32];
+    int i = 0;
+    int name_len = 0;
+    
+    search_pattern[i++] = '"';
+    while (array_name[name_len] != '\0' && name_len < 20) {
+        search_pattern[i++] = array_name[name_len++];
+    }
+    search_pattern[i++] = '"';
+    search_pattern[i++] = ':';
+    search_pattern[i++] = '[';
+    search_pattern[i] = '\0';
+    
+    int pattern_len = i;
+    
+    for (uint16_t pos = 0; pos <= json_length - pattern_len; pos++) {
+        int match = 1;
+        for (int j = 0; j < pattern_len; j++) {
+            if (json[pos + j] != search_pattern[j]) {
+                match = 0;
+                break;
+            }
+        }
+        if (match) {
+            return pos + pattern_len;
+        }
+    }
+    return 0;
+}
+
+// Вспомогательная функция для поиска i-го объекта в массиве
+static uint16_t find_array_object(const char *json, uint16_t json_length, uint16_t array_start, int index) {
+    int current_index = 0;
+    uint16_t pos = array_start;
+    
+    while (pos < json_length && current_index <= index) {
+        if (json[pos] == '{') {
+            if (current_index == index) {
+                return pos;
+            }
+            current_index++;
+            
+            // Пропускаем весь объект
+            int brace_count = 1;
+            pos++;
+            while (pos < json_length && brace_count > 0) {
+                if (json[pos] == '{') brace_count++;
+                else if (json[pos] == '}') brace_count--;
+                pos++;
+            }
+        } else {
+            pos++;
+        }
+    }
+    return 0;
+}
+
+// Основная функция для парсинга JSON в структуру Recipe_t
+// Основная функция для парсинга JSON в структуру Recipe_t
+uint32_t trigg = 0;
+int parse_recipe_json(const char *json, uint16_t json_length, Recipe_t *recipe) {
+    if (!json || !recipe) return 0;
+    
+    // Очищаем структуру
+   // memset(recipe, 0, sizeof(Recipe_t));
+	/**************** Не пролазят длинные сообщения, модифицируем код, уберем проверки, *************
+    int required_fields_found = 0;
+    
+    // Парсим обязательные поля - если их нет, это не рецепт
+    if (!parse_uint32_field(json, json_length, "recipeUid", &recipe->recipe_uid)) {
+        return 0;
+    }
+    required_fields_found++;
+    
+    if (!parse_uint16_field(json, json_length, "version", &recipe->version)) {
+        return 0;
+    }
+    required_fields_found++;
+    
+    // Парсим остальные важные поля
+    if (!parse_uint16_field(json, json_length, "originalGravity", &recipe->original_gravity)) {
+        return 0;
+    }
+    required_fields_found++;
+    
+    if (!parse_uint16_field(json, json_length, "targetGravity", &recipe->target_gravity)) {
+        return 0;
+    }
+    required_fields_found++;
+    
+    // Если нет основных полей рецепта - это не рецепт
+    if (required_fields_found < 2) {
+        return 0;
+    }
+    */
+		    
+  
+    
+   if(!! parse_uint16_field(json, json_length, "version", &recipe->version)){
+		trigg |= (1<<0);
+	 }
+		if(!! parse_uint16_field(json, json_length, "originalGravity", &recipe->original_gravity)){
+		trigg |= (1<<1);
+	 }
+    if(!! parse_uint16_field(json, json_length, "targetGravity", &recipe->target_gravity)){
+		trigg |= (1<<2);
+	 }
+		
+    // Парсим остальные поля (не обязательные)
+    if(!! parse_uint16_field(json, json_length, "ibu", &recipe->ibu)){
+		trigg |= (1<<3);
+	 }
+    if(!! parse_uint16_field(json, json_length, "abv", &recipe->abv)){
+		trigg |= (1<<4);
+	 }
+    if(!! parse_uint8_field(json, json_length, "beerColor", &recipe->beer_color)){
+		trigg |= (1<<5);
+	 }
+    if(!! parse_uint16_field(json, json_length, "boilTime", &recipe->boil_time)){
+		trigg |= (1<<6);
+	 }
+    if(!! parse_uint16_field(json, json_length, "fermentationTemp", &recipe->fermentation_temp)){
+		trigg |= (1<<7);
+	 }
+    if(!! parse_uint16_field(json, json_length, "fermentationDays", &recipe->fermentation_days)){
+		trigg |= (1<<8);
+	 }
+    if(!! parse_uint16_field(json, json_length, "crc16", &recipe->crc16)){
+		trigg |= (1<<9);
+	 }
+    
+    // Парсим имя
+    char name[32] = {0};
+    if (parse_string_field(json, json_length, "name", name, sizeof(name))) {
+        recipe->name_length = strlen(name);
+        strncpy(recipe->name, name, sizeof(recipe->name) - 1);
+        recipe->name[sizeof(recipe->name) - 1] = '\0';
+    }
+    
+    // Парсим количество пауз затирания и хмеля
+    parse_uint8_field(json, json_length, "mashStagesCount", &recipe->mash_stages_count);
+    parse_uint8_field(json, json_length, "hopAdditionsCount", &recipe->hop_additions_count);
+    
+    // Парсим массив хмеля
+    uint16_t hops_array_start = find_array_start(json, json_length, "hops");
+    if (hops_array_start > 0) {
+        for (int i = 0; i < recipe->hop_additions_count && i < 8; i++) {
+            uint16_t obj_start = find_array_object(json, json_length, hops_array_start, i);
+            if (obj_start > 0) {
+                // Находим конец объекта
+                uint16_t obj_end = obj_start;
+                int brace_count = 1;
+                while (obj_end < json_length && brace_count > 0) {
+                    if (json[obj_end] == '{') brace_count++;
+                    else if (json[obj_end] == '}') brace_count--;
+                    obj_end++;
+                }
+                
+                if (brace_count == 0) {
+                    uint16_t obj_length = obj_end - obj_start;
+                    
+                    // Парсим поля хмеля
+                    int amount, time;
+                    char hop_type_str[32] = {0};
+                    
+                    if (parse_int_field(json + obj_start, obj_length, "amount", &amount)) {
+                        recipe->hops[i].amount = (uint16_t)amount/10;
+                    }
+                    
+                    if (parse_int_field(json + obj_start, obj_length, "time", &time)) {
+                        recipe->hops[i].time = (uint16_t)time;
+                    }
+                    
+                    if (parse_string_field(json + obj_start, obj_length, "hopType", hop_type_str, sizeof(hop_type_str))) {
+                        if (strcmp(hop_type_str, "HOP_TYPE_HALLERTAUER") == 0) {
+                            recipe->hops[i].hop_type = 0;
+                        } else if (strcmp(hop_type_str, "HOP_TYPE_TETTNANG") == 0) {
+                            recipe->hops[i].hop_type = 1;
+                        } else {
+                            recipe->hops[i].hop_type = 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Парсим массив температурных пауз
+    uint16_t mash_array_start = find_array_start(json, json_length, "mashStages");
+    if (mash_array_start > 0) {
+        for (int i = 0; i < recipe->mash_stages_count && i < 5; i++) {
+            uint16_t obj_start = find_array_object(json, json_length, mash_array_start, i);
+            if (obj_start > 0) {
+                // Находим конец объекта
+                uint16_t obj_end = obj_start;
+                int brace_count = 1;
+                while (obj_end < json_length && brace_count > 0) {
+                    if (json[obj_end] == '{') brace_count++;
+                    else if (json[obj_end] == '}') brace_count--;
+                    obj_end++;
+                }
+                
+                if (brace_count == 0) {
+                    uint16_t obj_length = obj_end - obj_start;
+                    
+                    // Парсим поля паузы
+                    int temperature, time;
+                    char type_str[32] = {0};
+                    
+                    if (parse_int_field(json + obj_start, obj_length, "temperature", &temperature)) {
+											
+                        recipe->mash_stages[i].temperature = (uint16_t)temperature;
+                    }
+                    
+                    if (parse_int_field(json + obj_start, obj_length, "time", &time)) {
+                        recipe->mash_stages[i].time = (uint16_t)time;
+                    }
+                    
+                    if (parse_string_field(json + obj_start, obj_length, "type", type_str, sizeof(type_str))) {
+                        if (strcmp(type_str, "STAGE_TYPE_SACCHARIFICATION") == 0) {
+                            recipe->mash_stages[i].stage_type = MashType_SACCHARIFICATION;
+                        } else if (strcmp(type_str, "STAGE_TYPE_MASH_OUT") == 0) {
+                            recipe->mash_stages[i].stage_type = MashType_MASH_OUT;
+                        } else if (strcmp(type_str, "STAGE_TYPE_PROTEIN") == 0) {
+                            recipe->mash_stages[i].stage_type = MashType_PROTEIN;
+                        } else {
+                            recipe->mash_stages[i].stage_type = MashType_SACCHARIFICATION;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    
+		if(parse_uint32_field(json, json_length, "recipeUid", &recipe->recipe_uid))	
+			return 1; // Возвращаем 1 только если нашли все обязательные поля
+		
+		return 0;
+}
+
 
 /*
 Основной парсинг JSON
@@ -362,6 +640,13 @@ void parse_json_data(const char *json, uint16_t json_length, DeviceStatus_t *dat
 		parse_uint8_field(json, 	json_length, "isConnected", (uint8_t*)&data->isConnected);
 		parse_uint32_field(json, 	json_length, "setTime", &newTime);
 		setGlobalTime(newTime);
+	
+	/************* Принимаем рецепт *********************/
+	 //{"abv":500,"beerColor":20,"boilTime":60,"crc16":12345,"fermentationDays":21,"fermentationTemp":100,"hopAdditionsCount":2,"hops":[{"amount":250,"hopType":"HOP_TYPE_HALLERTAUER","time":60},{"amount":50,"hopType":"HOP_TYPE_TETTNANG","time":15},{"amount":0,"hopType":"","time":0},{"amount":0,"hopType":"","time":0},{"amount":0,"hopType":"","time":0},{"amount":0,"hopType":"","time":0},{"amount":0,"hopType":"","time":0},{"amount":0,"hopType":"","time":0}],"ibu":18,"mashStages":[{"temperature":680,"time":70,"type":"STAGE_TYPE_SACCHARIFICATION"},{"temperature":780,"time":10,"type":"STAGE_TYPE_MASH_OUT"},{"temperature":0,"time":0,"type":""},{"temperature":0,"time":0,"type":""},{"temperature":0,"time":0,"type":""}],"mashStagesCount":2,"name":"Пшеничное","nameLength":13,"originalGravity":1052,"recipe":1,"recipeUid":1145981772,"targetGravity":1014,"version":1}
+	if(parse_recipe_json(json,json_length, &newRecept)){//Если приняли рецепт, то пишем его в память
+		preSetRecepteToFlash(&newRecept);
+	}
+	
 		//if(!deviceStatus.isMuted)
 			//beep(1);
 }

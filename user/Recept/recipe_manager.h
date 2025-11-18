@@ -42,5 +42,6 @@ uint8_t Recipe_GetInfo(uint8_t recipe_index, char* name, uint16_t* original_grav
 uint8_t Recipe_GetCount(void);
 uint8_t Recipe_GetNames(char names[][32], uint8_t max_names);
 
-void preSetRecepteToFlash(void);
+void preSetRecepteToFlash(Recipe_t *receptBuf);
+void clearAllRecept(void);
 #endif

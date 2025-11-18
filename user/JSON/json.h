@@ -2,8 +2,9 @@
 #define _JSON_H
 #include "MDR32FxQI_config.h"           // Milandr::Device:Startup
 #include "allDefenition.h"
-#define UART_BUFFER_SIZE 512
-#define JSON_OUTPUT_SIZE 256
+#include "recept.h"
+#define UART_BUFFER_SIZE 1024
+#define JSON_OUTPUT_SIZE UART_BUFFER_SIZE
 
 typedef enum {
     JSON_PROCESSED,
@@ -39,7 +40,7 @@ void print_parsed_data(const DeviceStatus_t *data);
 // Вспомогательные функции
 int get_buffer_data_count(UART_JSON_Parser *parser);
 void clear_buffer(UART_JSON_Parser *parser);
-
+int parse_recipe_json(const char *json, uint16_t json_length, Recipe_t *recipe);
 void process_incoming_json(UART_JSON_Parser *parser, DeviceStatus_t *device);
 
 

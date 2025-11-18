@@ -397,14 +397,14 @@
               <FilePath>.\user\delay.c</FilePath>
             </File>
             <File>
-              <FileName>delay.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\user\delay.h</FilePath>
-            </File>
-            <File>
               <FileName>interrupts.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\user\interrupts.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\user\delay.h</FilePath>
             </File>
             <File>
               <FileName>interrupts.h</FileName>

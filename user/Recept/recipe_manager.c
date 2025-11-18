@@ -11,6 +11,11 @@
 #define MAX_RECIPES_PER_SECTOR  (SECTOR_SIZE / PAGE_SIZE)  // 16 рецептов на сектор
 #define MAX_RECIPES          (MAX_RECIPES_PER_SECTOR * 2)  // 32 рецепта всего
 
+/**** Отладка ***************/
+uint32_t debugPageAddr[10];
+uint8_t debugPageAddrCnt = 0;
+
+
 // Глобальные переменные для управления
 static uint8_t active_sector = RECIPES_SECTOR_2;
 static uint8_t recipe_count = 0;
@@ -153,15 +158,16 @@ uint8_t Recipe_ReadFromFlash(Recipe_t* recipe, uint8_t index) {
     }
     
     uint32_t page_address = GetRecipePageAddress(target_sector, page_index);
-    
+    debugPageAddr[7] = page_address;
+		debugPageAddr[8] = index;
     // Читаем рецепт
-    W25qxx_ReadPage((uint8_t*)recipe, page_address, 0, sizeof(Recipe_t));
+    W25qxx_ReadPage((uint8_t*)recipe, page_address, 0, sizeof(Recipe_t));//0x00000026
     
     // Проверяем CRC
     uint16_t calculated_crc = CRC16_Calculate((uint8_t*)recipe, sizeof(Recipe_t) - 2);
-    if (calculated_crc != recipe->crc16) {
-        return 0;  // Ошибка CRC
-    }
+//    if (calculated_crc != recipe->crc16) {
+//        return 0;  // Ошибка CRC
+//    }
     
     return 1;
 }
@@ -230,7 +236,8 @@ uint8_t Recipe_DeleteFromFlash(uint8_t index) {
 Загрузка рецепта из FLASH памяти
 */
 uint8_t Recipe_LoadFromFlash(uint8_t recipe_index) {
-    if (recipe_index >= recipe_count) return 0;
+    if (recipe_index >= recipe_count) 
+			return 0;
     
     uint8_t target_sector, page_index;
     
@@ -244,10 +251,14 @@ uint8_t Recipe_LoadFromFlash(uint8_t recipe_index) {
     }
     
     uint32_t page_address = GetRecipePageAddress(target_sector, page_index);
-    
+		
+    debugPageAddr[5] = page_address;
+		debugPageAddr[6] = recipe_index;
+		
     // Читаем рецепт из FLASH
     W25qxx_ReadPage((uint8_t*)&current_recipe, page_address, 0, sizeof(Recipe_t));
-    
+     
+
     // Проверяем CRC
     uint16_t calculated_crc = CRC16_Calculate((uint8_t*)&current_recipe, sizeof(Recipe_t) - 2);
     if (calculated_crc != current_recipe.crc16) {
@@ -370,20 +381,22 @@ uint8_t Recipe_GetCount(void) {
 /*
 Получение списка названий рецептов
 */
+
 uint8_t Recipe_GetNames(char names[][32], uint8_t max_names) {
     uint8_t found_count = 0;
-    
+    debugPageAddrCnt  =0;
     // Проверяем оба сектора
     for (uint8_t sector = RECIPES_SECTOR_2; sector <= RECIPES_SECTOR_3 && found_count < max_names; sector++) {
         uint8_t pages_in_sector = (sector == RECIPES_SECTOR_2) ? MAX_RECIPES_PER_SECTOR : MAX_RECIPES_PER_SECTOR;
         
         for (uint8_t page_index = 0; page_index < pages_in_sector && found_count < max_names; page_index++) {
             uint32_t page_address = GetRecipePageAddress(sector, page_index);
-            
+
             // Проверяем, не пустая ли страница
             if (!W25qxx_IsEmptyPage(page_address, 0, sizeof(Recipe_t))) {
                 Recipe_t temp_recipe;
                 
+				
                 // Читаем только заголовок рецепта с именем
                 W25qxx_ReadPage((uint8_t*)&temp_recipe, page_address, 0, 
                                offsetof(Recipe_t, name) + 32);
@@ -397,6 +410,10 @@ uint8_t Recipe_GetNames(char names[][32], uint8_t max_names) {
                     memcpy(names[found_count], temp_recipe.name, name_len);
                     names[found_count][name_len] = '\0';  // Добавляем терминатор
                     found_count++;
+									
+	            debugPageAddr[debugPageAddrCnt] = page_address;
+					debugPageAddrCnt++;
+					debugPageAddrCnt %= 10;											
                 }
             }
         }
@@ -426,14 +443,23 @@ uint8_t receptBuf[] = {
 0x79
 };
 /**/
-void preSetRecepteToFlash(void){
-	W25qxx_EraseSector(RECIPES_SECTOR_2);
-	Recipe_SaveToFlash((Recipe_t*)receptBuf, total_recipes);
-	for(uint8_t i = 0; i < 10; i++){
-		receptBuf[i] = 0;
+void preSetRecepteToFlash(Recipe_t *receptBuf){
+//	W25qxx_EraseSector(RECIPES_SECTOR_2);//Это для теста
+	//Можно добавить только 3 рецепта, добавление следующего сотрет все предыдущие
+	if(total_recipes > 2){
+		clearAllRecept();
 	}
+	Recipe_SaveToFlash((Recipe_t*)receptBuf, total_recipes);
+//	for(uint8_t i = 0; i < 10; i++){
+//		receptBuf[i] = 0;
+//	}
 	Recipe_LoadFromFlash(0); 
 }
 
+/**/
+void clearAllRecept(void){
+		W25qxx_EraseSector(RECIPES_SECTOR_2);
+		W25qxx_EraseSector(RECIPES_SECTOR_3);
+}
 
 

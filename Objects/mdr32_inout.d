@@ -3,11 +3,11 @@
 .\objects\mdr32_inout.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
 .\objects\mdr32_inout.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\mdr32_inout.o: .\RTE\_Target_1\RTE_Components.h
-.\objects\mdr32_inout.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
+.\objects\mdr32_inout.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\DeviceSupport\K1986VE1xI\inc\K1986VE1xI.h
 .\objects\mdr32_inout.o: .\RTE\Device\K1986VE1xI\MDR32FxQI_config.h
-.\objects\mdr32_inout.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
-.\objects\mdr32_inout.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
-.\objects\mdr32_inout.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
+.\objects\mdr32_inout.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cm1.h
+.\objects\mdr32_inout.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmInstr.h
+.\objects\mdr32_inout.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\CMSIS\MDR32FxQI\CoreSupport\CM1\core_cmFunc.h
 .\objects\mdr32_inout.o: .\RTE\Device\K1986VE1xI\system_K1986VE1xI.h
-.\objects\mdr32_inout.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_port.h
-.\objects\mdr32_inout.o: C:\Users\User\AppData\Local\Arm\Packs\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_rst_clk.h
+.\objects\mdr32_inout.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_port.h
+.\objects\mdr32_inout.o: C:\Keil_v5\ARM\PACK\Milandr\MDR32FxQI\1.3.2\Libraries\SPL\MDR32FxQI\inc\MDR32FxQI_rst_clk.h
